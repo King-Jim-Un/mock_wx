@@ -1,0 +1,30 @@
+[project]
+name = "CallDiff"
+version = "0.0.0"
+description = "Compare call lists"
+authors = [
+    { name = "Gre7g Luterman", email = "gre7g.luterman@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "wxpython>=4.0.0,<5.0.0"
+]
+
+[dependency-groups]
+dev = [
+    "black"
+]
+docs = [
+    "sphinx"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = true
+
+[tool.black]
+line-length = 120
