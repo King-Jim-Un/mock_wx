@@ -9,10 +9,11 @@ _ = wx.GetTranslation
 
 from calldiff.app_header import get_app
 from calldiff.constants import CONSTANTS
+from calldiff.model.comparison import HashableComparison
 
 
 class DiffPanel(wx.ScrolledCanvas):
-    contents: list
+    contents: HashableComparison
     font: wx.Font
 
     def __init__(self, *args, **kwargs) -> None:
@@ -23,7 +24,7 @@ class DiffPanel(wx.ScrolledCanvas):
         )
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
-    def set_contents(self, contents) -> None:
+    def set_contents(self, contents: HashableComparison) -> None:
         self.contents = contents
 
     def on_paint(self, _event: wx.PaintEvent) -> None:

@@ -1,5 +1,6 @@
 """Constants, enums, and types"""
 
+from enum import Enum, auto
 import logging
 from typing import Tuple, NewType
 import wx
@@ -10,6 +11,14 @@ LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
 # Types:
+
+
+# Enums:
+class LineType(Enum):
+    EQUAL = auto()
+    INSERT = auto()
+    DELETE = auto()
+    REPLACE = auto()
 
 
 class CONSTANTS:

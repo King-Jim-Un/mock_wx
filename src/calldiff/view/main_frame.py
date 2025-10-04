@@ -18,9 +18,35 @@ class MainFrame(wx.Frame):
         super().__init__(*args, **kwargs)
 
         self.diff_panel = DiffPanel(self, name="diff_panel")
-        self.diff_panel.set_contents([str(x) for x in range(100)])
+        self.diff_panel.set_data()
 
         self.Bind(wx.EVT_CLOSE, self.on_close)
+
+    def set_data(self):  # TODO REMOVE THIS
+        from unittest.mock import Mock, mock_open, call
+        from calldiff.model.comparison import HashableComparison
+        mock = Mock()
+        mock_open(mock.open, "some read data")
+        mock.one()
+        mock.two.three().four()
+        mock.five(6, 7, 8, 9, 10, eleven=12, thirteen=14).thirteen("fourteen")
+        with mock.open("test", "rt") as file_obj:
+            mock.write(file_obj.read())
+        expect = [
+            call.one(),
+            call.two.three(),
+            call.two.three().four(),
+            call.five(6, 7, 8, 9, 10, thirteen=14, eleven=12),
+            call.five().thirteen("fourteen"),
+            call.open("tst", "rt"),
+            call.open("tet", "rt"),
+            call.open().__enter__(),
+            call.open().read(),
+            call.write("some read data"),
+            call.open().__exit__(None, None, None),
+            call.open().close(),
+        ]
+        HashableComparison(expect, mock).compare()
 
     def on_close(self, event: wx.CloseEvent) -> None:
         event.Skip()
