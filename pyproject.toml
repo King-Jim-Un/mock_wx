@@ -8,15 +8,18 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "wxpython>=4.0.0,<5.0.0"
+    "pypubsub==4.0.3",
+    "wxpython==4.2.3",
 ]
 
 [dependency-groups]
 dev = [
-    "black"
+    "black",
+    "mypy",
 ]
 docs = [
-    "sphinx"
+    "sphinx",
+    "sphinx-rtd-theme",
 ]
 
 [build-system]
