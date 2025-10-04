@@ -33,7 +33,7 @@ class DiffPanel(wx.ScrolledCanvas):
         try:
             self.DoPrepareDC(dc)
 
-            dc.SetBackground(wx.Brush(wx.Colour(*app.settings.desktop_background)))
+            dc.SetBackground(wx.Brush(app.settings.desktop_background))
             dc.Clear()
 
             # Get line size
@@ -44,10 +44,10 @@ class DiffPanel(wx.ScrolledCanvas):
 
             # Draw line numbers
             pen_width = CONSTANTS.WINDOWS.DIFF.DIVIDER_WIDTH
-            dc.SetPen(wx.Pen(wx.Colour(*app.settings.rule), pen_width))
-            dc.SetBrush(wx.Brush(wx.Colour(*app.settings.number_background)))
+            dc.SetPen(wx.Pen(app.settings.rule, pen_width))
+            dc.SetBrush(wx.Brush(app.settings.number_background))
             dc.DrawRectangle(-pen_width, -pen_width, col_width, self.GetClientSize().height + (pen_width * 2))
-            dc.SetPen(wx.Pen(wx.Colour(*app.settings.number_text)))
+            dc.SetPen(wx.Pen(app.settings.number_text))
             dc.SetFont(self.font)
             x, y = CONSTANTS.WINDOWS.DIFF.LINE_NUM_OFFSET
             for line_num in range(1, len(self.contents) + 1):

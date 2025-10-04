@@ -28,19 +28,16 @@ class CallDiffApp(wx.App):
         """Initialization"""
         from calldiff.model.preferences import Preferences
         from calldiff.model.live_data import LiveData
+        from calldiff.view.main_frame import MainFrame
 
         self.settings = Preferences.load(self.args.reset)
         self.live_data = LiveData()
-
-        # TODO
-        self.frame = wx.Frame(None, title=_("CallDiff"), name="frame")
-        # TODO apply settings
-        from calldiff.view.diff_panel import DiffPanel
-
-        self.diff_panel = DiffPanel(self.frame, name="diff_panel")
-        self.diff_panel.set_contents([str(x) for x in range(100)])
+        self.frame = MainFrame(None, title=_("CallDiff"), name="frame")
+        if self.settings.window_rect:
+            self.frame.SetRect(self.settings.window_rect)
+        if self.settings.maximize:
+            self.frame.Maximize()
         self.frame.Show()
-        # TODO frame on_close update settings
 
         return True
 

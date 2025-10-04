@@ -10,7 +10,6 @@ LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
 # Types:
-ColorTuple = NewType("ColorTuple", Tuple[int, int, int])
 
 
 class CONSTANTS:

@@ -1,6 +1,6 @@
 """Persistent application settings"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from pathlib import Path
 from typing import Optional
@@ -18,6 +18,6 @@ class AppSettings(Settings):
     """Persistent application settings"""
 
     maximize: bool = False
-    window_rect: tuple = ()
+    window_rect: Optional[wx.Rect] = None
     logging_level: int = logging.WARNING
     log_file: Optional[Path] = None
