@@ -168,6 +168,34 @@ def main():
     ]
     HashableComparison(expect, mock).compare()
 
+"""
+HashableComparison(
+expect=[call.one(), call.two.three(), call.two.three().four(), call.five(6, 7, 8, 9, 10, thirteen=14, eleven=12), call.five().thirteen('fourteen'), call.open('tst', 'rt'), call.open('tet', 'rt'), call.open().__enter__(), call.open().read(), call.write('some read data'), call.open().__exit__(None, None, None), call.open().close()], 
+mock=<Mock id='2679956694960'>, 
+comparison_lines=[
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.one(), mock=call.one(), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.two.three(), mock=call.two.three(), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.two.three().four(), mock=call.two.three().four(), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.five(6, 7, 8, 9, 10, thirteen=14, eleven=12), mock=call.five(6, 7, 8, 9, 10, eleven=12, thirteen=14), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.five().thirteen(fourteen), mock=call.five().thirteen(fourteen), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.REPLACE: 4>, expect=call.open(tst, rt), mock=call.open(test, rt), line_analysis=[
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text='call.'), 
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text='open'), 
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text='('), 
+TextChunk(chunk_type=<LineType.DELETE: 3>, text="'tst'"), 
+TextChunk(chunk_type=<LineType.INSERT: 2>, text="'test'"), 
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text=', '), 
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text="'rt'"), 
+TextChunk(chunk_type=<LineType.EQUAL: 1>, text=')')
+]), 
+ComparisonLine(line_type=<LineType.DELETE: 3>, expect=call.open(tet, rt), mock=None, line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.open().__enter__(), mock=call.open().__enter__(), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.open().read(), mock=call.open().read(), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.write(some read data), mock=call.write(some read data), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.open().__exit__(None, None, None), mock=call.open().__exit__(None, None, None), line_analysis=[]), 
+ComparisonLine(line_type=<LineType.EQUAL: 1>, expect=call.open().close(), mock=call.open().close(), line_analysis=[])
+])
+"""
 
 if __name__ == "__main__":
     main()

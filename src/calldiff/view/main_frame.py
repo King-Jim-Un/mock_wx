@@ -18,7 +18,7 @@ class MainFrame(wx.Frame):
         super().__init__(*args, **kwargs)
 
         self.diff_panel = DiffPanel(self, name="diff_panel")
-        self.diff_panel.set_data()
+        self.set_data()
 
         self.Bind(wx.EVT_CLOSE, self.on_close)
 
@@ -46,7 +46,9 @@ class MainFrame(wx.Frame):
             call.open().__exit__(None, None, None),
             call.open().close(),
         ]
-        HashableComparison(expect, mock).compare()
+        comparison = HashableComparison(expect, mock)
+        comparison.compare()
+        self.diff_panel.set_contents(comparison)
 
     def on_close(self, event: wx.CloseEvent) -> None:
         event.Skip()

@@ -37,3 +37,4 @@ class CONSTANTS:
             LINE_NUM_SCALE = (1.7, 1.2)
             LINE_NUM_OFFSET = (5, 2)
             DIVIDER_WIDTH = 2
+            DIFF_TEXT_OFFSET = (5, 2)

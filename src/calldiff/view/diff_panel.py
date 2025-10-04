@@ -8,7 +8,7 @@ LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
 from calldiff.app_header import get_app
-from calldiff.constants import CONSTANTS
+from calldiff.constants import CONSTANTS, LineType
 from calldiff.model.comparison import HashableComparison
 
 
@@ -19,6 +19,7 @@ class DiffPanel(wx.ScrolledCanvas):
     def __init__(self, *args, **kwargs) -> None:
         """Constructor"""
         super().__init__(*args, **kwargs)
+        self.contents = HashableComparison()
         self.font = wx.Font(
             get_app().settings.font_size, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL
         )
@@ -30,30 +31,58 @@ class DiffPanel(wx.ScrolledCanvas):
     def on_paint(self, _event: wx.PaintEvent) -> None:
         """Handle paint event"""
         app = get_app()
+        settings = app.settings
+        backgrounds = {
+            LineType.EQUAL: settings.equal_background,
+            LineType.INSERT: settings.insert_line_background,
+            LineType.DELETE: settings.delete_line_background,
+            LineType.REPLACE: settings.replace_background,
+        }
+        foregrounds = {
+            LineType.EQUAL: settings.equal_text,
+            LineType.INSERT: settings.insert_line_text,
+            LineType.DELETE: settings.delete_line_text,
+            LineType.REPLACE: settings.replace_text,
+        }
+        size = self.GetClientSize()
         dc = wx.PaintDC(self)
         try:
             self.DoPrepareDC(dc)
 
-            dc.SetBackground(wx.Brush(app.settings.desktop_background))
+            dc.SetBackground(wx.Brush(settings.desktop_background))
             dc.Clear()
 
             # Get line size
-            text = str(len(self.contents))
+            dc.SetFont(self.font)
+            text = str(self.contents.last_line_num())
             max_width, max_height = dc.GetTextExtent(text)
             col_width = int(max_width * CONSTANTS.WINDOWS.DIFF.LINE_NUM_SCALE[0])
             line_height = int(max_height * CONSTANTS.WINDOWS.DIFF.LINE_NUM_SCALE[1])
 
-            # Draw line numbers
+            # Draw number pane
             pen_width = CONSTANTS.WINDOWS.DIFF.DIVIDER_WIDTH
-            dc.SetPen(wx.Pen(app.settings.rule, pen_width))
-            dc.SetBrush(wx.Brush(app.settings.number_background))
-            dc.DrawRectangle(-pen_width, -pen_width, col_width, self.GetClientSize().height + (pen_width * 2))
-            dc.SetPen(wx.Pen(app.settings.number_text))
-            dc.SetFont(self.font)
-            x, y = CONSTANTS.WINDOWS.DIFF.LINE_NUM_OFFSET
-            for line_num in range(1, len(self.contents) + 1):
-                text_width, text_height = dc.GetTextExtent(str(line_num))
-                dc.DrawText(str(line_num), x + max_width - text_width, y)
-                y += line_height
+            panel_offset = col_width + pen_width
+            panel_width = size.width - panel_offset
+            dc.SetPen(wx.Pen(settings.rule, pen_width))
+            dc.SetBrush(wx.Brush(settings.number_background))
+            dc.DrawRectangle(-pen_width, -pen_width, col_width + (pen_width*2), size.height + (pen_width * 2))
+            diff_text_offset = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET
+
+            # Loop over lines
+            for index, line in enumerate(self.contents.comparison_lines):
+                color = backgrounds[line.line_type]
+                dc.SetPen(wx.Pen(color))
+                dc.SetBrush(wx.Brush(color))
+                y = line_height * index
+                dc.DrawRectangle(panel_offset, y, panel_width, line_height)
+                if line.expect:
+                    dc.SetTextForeground(settings.number_text)
+                    line_number = str(line.expect.line_number)
+                    text_width, text_height = dc.GetTextExtent(line_number)
+                    offset = CONSTANTS.WINDOWS.DIFF.LINE_NUM_OFFSET
+                    dc.DrawText(line_number, offset[0] + max_width - text_width, offset[1] + y)
+                dc.SetTextForeground(foregrounds[line.line_type])
+                text = str(line)
+                dc.DrawText(text, diff_text_offset[0] + panel_offset, diff_text_offset[1] + y)
         finally:
             dc.Destroy()

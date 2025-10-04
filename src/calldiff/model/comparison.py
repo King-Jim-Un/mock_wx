@@ -3,8 +3,8 @@
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 import logging
-from typing import Any, List, Optional
-from unittest.mock import _Call
+from typing import Any, List, Optional, NewType
+from unittest.mock import _Call, Mock
 import wx
 
 from calldiff.constants import LineType
@@ -24,6 +24,12 @@ class SubCall:
 
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, SubCall) and self.comparable == other.comparable
+
+
+@dataclass
+class TextChunk:
+    chunk_type: LineType
+    text: str
 
 
 @dataclass(repr=False, eq=False)
@@ -61,7 +67,7 @@ class HashableCall:
         )
 
     def __repr__(self) -> str:
-        args = [str(arg) for arg in self.args] + [f"{key}={value}" for key, value in self.kwargs]
+        args = [repr(arg) for arg in self.args] + [f"{key}={repr(value)}" for key, value in self.kwargs]
         return f"call.{self.name}({', '.join(args)})"
 
     def to_list(self) -> List[SubCall]:
@@ -71,37 +77,37 @@ class HashableCall:
             if subsequent:
                 return_value.append(SubCall(", ", ", "))
             subsequent = True
-            return_value.append(SubCall(arg, str(arg)))
+            return_value.append(SubCall(arg, repr(arg)))
         for kwarg in self.kwargs:
             if subsequent:
                 return_value.append(SubCall(", ", ", "))
             subsequent = True
-            return_value.append(SubCall(kwarg, f"{kwarg[0]}={kwarg[1]}"))
+            return_value.append(SubCall(kwarg, f"{kwarg[0]}={repr(kwarg[1])}"))
         return return_value + [SubCall(")", ")")]
 
-    def compare(self, other: "HashableCall"):
+    def compare(self, other: "HashableCall") -> "ComparisonLine":
         s_list = self.to_list()
         o_list = other.to_list()
         sequence = SequenceMatcher(a=s_list, b=o_list)
-        text = ""
+        chunks: List[TextChunk] = []
         for op in sequence.get_opcodes():
             if op[0] == "equal":
                 for index in range(op[1], op[2]):
-                    text += s_list[index].printable
+                    chunks.append(TextChunk(LineType.EQUAL, s_list[index].printable))
             elif op[0] == "replace":
                 for index in range(op[1], op[2]):
-                    text += f"<-{s_list[index].printable}>"
+                    chunks.append(TextChunk(LineType.DELETE, s_list[index].printable))
                 for index in range(op[3], op[4]):
-                    text += f"<+{o_list[index].printable}>"
+                    chunks.append(TextChunk(LineType.INSERT, o_list[index].printable))
             elif op[0] == "insert":
                 for index in range(op[3], op[4]):
-                    text += f"<+{o_list[index].printable}>"
+                    chunks.append(TextChunk(LineType.INSERT, o_list[index].printable))
             elif op[0] == "delete":
                 for index in range(op[1], op[2]):
-                    text += f"<-{s_list[index].printable}>"
+                    chunks.append(TextChunk(LineType.DELETE, s_list[index].printable))
             else:
                 assert False
-        print(f"   {text}")
+        return ComparisonLine(LineType.REPLACE, self, other, chunks)
 
 
 @dataclass
@@ -109,56 +115,72 @@ class ComparisonLine:
     line_type: LineType
     expect: Optional[HashableCall] = None
     mock: Optional[HashableCall] = None
+    line_analysis: List[TextChunk] = field(default_factory=list)
+
+    def __str__(self):
+        return str(self.expect) if self.expect else str(self.mock)
+
+
+CallList = NewType("CallList", List[HashableCall])
 
 
 @dataclass
 class HashableComparison:
-    expect: List[_Call]
-    mock: _Call
+    expect: List[_Call] = field(default_factory=list)
+    mock: _Call = field(default_factory=Mock)
     comparison_lines: List[ComparisonLine] = field(default_factory=list)
-    # hash_expect: List[HashableCall] = field(init=False)
-    # hash_mock: List[HashableCall] = field(init=False)
-    #
-    # def __post_init__(self) -> None:
-    #     self.hash_expect = [HashableCall(item, index + 1) for index, item in enumerate(self.expect)]
-    #     self.hash_mock = [HashableCall(item) for item in self.mock.mock_calls]
 
-    def compare(self):
-        sequence = SequenceMatcher(a=self.hash_expect, b=self.hash_mock)
+    def compare(self) -> None:
+        """Compare the mock against the expectation"""
+        hash_expect = CallList([HashableCall(item, index + 1) for index, item in enumerate(self.expect)])
+        hash_mock = CallList([HashableCall(item) for item in self.mock.mock_calls])
+
+        sequence = SequenceMatcher(a=hash_expect, b=hash_mock)
         for op in sequence.get_opcodes():
             if op[0] == "equal":
-                for index in range(op[1], op[2]):
-                    print(f"=  {self.hash_expect[index]}")
+                for index in range(op[2] - op[1]):
+                    self.comparison_lines.append(
+                        ComparisonLine(LineType.EQUAL, hash_expect[op[1] + index], hash_mock[op[3] + index])
+                    )
             elif op[0] == "replace":
-                self.sub_compare(*op[1:])
+                self.sub_compare(hash_expect, hash_mock, *op[1:])
             elif op[0] == "insert":
                 for index in range(op[3], op[4]):
-                    print(f"+  {self.hash_mock[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.INSERT, mock=hash_mock[index]))
             elif op[0] == "delete":
                 for index in range(op[1], op[2]):
-                    print(f"-  {self.hash_expect[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.DELETE, hash_expect[index]))
             else:
                 assert False
 
-    def sub_compare(self, e_start, e_end, m_start, m_end):
-        e_names = [hashable.name for hashable in self.hash_expect[e_start:e_end]]
-        m_names = [hashable.name for hashable in self.hash_mock[m_start:m_end]]
+    def sub_compare(
+        self, hash_expect: CallList, hash_mock: CallList, e_start: int, e_end: int, m_start: int, m_end: int
+    ) -> None:
+        """Compare a replacement range within an earlier comparison"""
+        e_names = [hashable.name for hashable in hash_expect[e_start:e_end]]
+        m_names = [hashable.name for hashable in hash_mock[m_start:m_end]]
         sequence = SequenceMatcher(a=e_names, b=m_names)
         for op in sequence.get_opcodes():
             adj_op = (op[0], op[1] + e_start, op[2] + e_start, op[3] + m_start, op[4] + m_start)
             if adj_op[0] == "equal":
                 for index in range(adj_op[2] - adj_op[1]):
-                    self.hash_expect[adj_op[1] + index].compare(self.hash_mock[adj_op[3] + index])
+                    self.comparison_lines.append(hash_expect[adj_op[1] + index].compare(hash_mock[adj_op[3] + index]))
             elif adj_op[0] == "replace":
                 for index in range(adj_op[1], adj_op[2]):
-                    print(f" - {self.hash_expect[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.DELETE, hash_expect[index]))
                 for index in range(adj_op[3], adj_op[4]):
-                    print(f" + {self.hash_mock[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.INSERT, mock=hash_mock[index]))
             elif adj_op[0] == "insert":
                 for index in range(adj_op[3], adj_op[4]):
-                    print(f" + {self.hash_mock[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.INSERT, mock=hash_mock[index]))
             elif adj_op[0] == "delete":
                 for index in range(adj_op[1], adj_op[2]):
-                    print(f" - {self.hash_expect[index]}")
+                    self.comparison_lines.append(ComparisonLine(LineType.DELETE, hash_expect[index]))
             else:
                 assert False
+
+    def __len__(self):
+        return len(self.comparison_lines)
+
+    def last_line_num(self) -> int:
+        return len(self.expect)
