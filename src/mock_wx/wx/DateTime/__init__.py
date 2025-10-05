@@ -1,0 +1,6 @@
+class TimeZone: ...
+class Tm: ...
+Country = {"Country"}
+WeekFlags = {"WeekFlags"}
+Month = {"Month"}
+TZ = {"TZ"}

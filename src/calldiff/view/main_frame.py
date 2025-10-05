@@ -7,7 +7,7 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
-from calldiff.app_header import get_app
+from calldiff import application
 from calldiff.view.diff_panel import DiffPanel
 
 
@@ -51,8 +51,9 @@ class MainFrame(wx.Frame):
         self.diff_panel.set_contents(comparison)
 
     def on_close(self, event: wx.CloseEvent) -> None:
+        """Save the frame size before closing"""
         event.Skip()
-        settings = get_app().settings
+        settings = application.get_app().settings
         settings.maximize = self.IsMaximized()
         self.Freeze()
         self.Restore()

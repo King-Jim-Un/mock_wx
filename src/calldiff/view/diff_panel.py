@@ -7,9 +7,9 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
-from calldiff.app_header import get_app
+from calldiff import application
 from calldiff.constants import CONSTANTS, LineType
-from calldiff.model.comparison import HashableComparison, ComparisonLine
+from calldiff.model.comparison import HashableComparison
 
 
 class DiffPanel(wx.ScrolledCanvas):
@@ -19,10 +19,9 @@ class DiffPanel(wx.ScrolledCanvas):
     def __init__(self, *args, **kwargs) -> None:
         """Constructor"""
         super().__init__(*args, **kwargs)
+        app = application.get_app()
         self.contents = HashableComparison()
-        self.font = wx.Font(
-            get_app().settings.font_size, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL
-        )
+        self.font = wx.Font(app.settings.font_size, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
     def set_contents(self, contents: HashableComparison) -> None:
@@ -31,7 +30,7 @@ class DiffPanel(wx.ScrolledCanvas):
 
     def on_paint(self, _event: wx.PaintEvent) -> None:
         """Handle paint event"""
-        app = get_app()
+        app = application.get_app()
         settings = app.settings
         backgrounds = {
             LineType.EQUAL: settings.equal_background,
@@ -91,11 +90,9 @@ class DiffPanel(wx.ScrolledCanvas):
         finally:
             dc.Destroy()
 
-    def draw_replacement_line(
-        self, dc: wx.DC, index: int, panel_offset: int, line_height: int
-    ) -> None:
+    def draw_replacement_line(self, dc: wx.DC, index: int, panel_offset: int, line_height: int) -> None:
         """Draw a line of text in replacement mode"""
-        settings = get_app().settings
+        settings = application.get_app().settings
         line = self.contents.comparison_lines[index]
         backgrounds = {
             LineType.EQUAL: settings.replace_background,
@@ -117,7 +114,6 @@ class DiffPanel(wx.ScrolledCanvas):
             dc.SetPen(wx.Pen(color))
             dc.SetBrush(wx.Brush(color))
             text_width, text_height = dc.GetTextExtent(chunk.text)
-            print(text_width, chunk)
             dc.DrawRectangle(x, y, text_width, line_height)
             dc.SetTextForeground(foregrounds[chunk.chunk_type])
             dc.DrawText(chunk.text, x + text_indent, CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[1] + y)
