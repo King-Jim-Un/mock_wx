@@ -32,6 +32,11 @@ class TextChunk:
     text: str
 
 
+@dataclass
+class LineChunks:
+    chunks: List[TextChunk] = field(default_factory=list)
+
+
 @dataclass(repr=False, eq=False)
 class HashableCall:
     the_call: _Call
@@ -107,7 +112,7 @@ class HashableCall:
                     chunks.append(TextChunk(LineType.DELETE, s_list[index].printable))
             else:
                 assert False
-        return ComparisonLine(LineType.REPLACE, self, other, chunks)
+        return ComparisonLine(LineType.REPLACE, self, other, LineChunks(chunks))
 
 
 @dataclass
@@ -115,10 +120,13 @@ class ComparisonLine:
     line_type: LineType
     expect: Optional[HashableCall] = None
     mock: Optional[HashableCall] = None
-    line_analysis: List[TextChunk] = field(default_factory=list)
+    line_analysis: LineChunks = field(default_factory=LineChunks)
 
     def __str__(self):
-        return str(self.expect) if self.expect else str(self.mock)
+        if self.line_type == LineType.REPLACE:
+            return str(self.line_analysis)
+        else:
+            return str(self.expect) if self.expect else str(self.mock)
 
 
 CallList = NewType("CallList", List[HashableCall])

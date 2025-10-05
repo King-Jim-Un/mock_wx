@@ -9,7 +9,7 @@ _ = wx.GetTranslation
 
 from calldiff.app_header import get_app
 from calldiff.constants import CONSTANTS, LineType
-from calldiff.model.comparison import HashableComparison
+from calldiff.model.comparison import HashableComparison, ComparisonLine
 
 
 class DiffPanel(wx.ScrolledCanvas):
@@ -26,6 +26,7 @@ class DiffPanel(wx.ScrolledCanvas):
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
     def set_contents(self, contents: HashableComparison) -> None:
+        """Set the diff's contents"""
         self.contents = contents
 
     def on_paint(self, _event: wx.PaintEvent) -> None:
@@ -65,7 +66,7 @@ class DiffPanel(wx.ScrolledCanvas):
             panel_width = size.width - panel_offset
             dc.SetPen(wx.Pen(settings.rule, pen_width))
             dc.SetBrush(wx.Brush(settings.number_background))
-            dc.DrawRectangle(-pen_width, -pen_width, col_width + (pen_width*2), size.height + (pen_width * 2))
+            dc.DrawRectangle(-pen_width, -pen_width, col_width + (pen_width * 2), size.height + (pen_width * 2))
             diff_text_offset = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET
 
             # Loop over lines
@@ -81,8 +82,44 @@ class DiffPanel(wx.ScrolledCanvas):
                     text_width, text_height = dc.GetTextExtent(line_number)
                     offset = CONSTANTS.WINDOWS.DIFF.LINE_NUM_OFFSET
                     dc.DrawText(line_number, offset[0] + max_width - text_width, offset[1] + y)
-                dc.SetTextForeground(foregrounds[line.line_type])
-                text = str(line)
-                dc.DrawText(text, diff_text_offset[0] + panel_offset, diff_text_offset[1] + y)
+                if line.line_type == LineType.REPLACE:
+                    self.draw_replacement_line(dc, index, panel_offset, line_height)
+                else:
+                    dc.SetTextForeground(foregrounds[line.line_type])
+                    text = str(line)
+                    dc.DrawText(text, diff_text_offset[0] + panel_offset, diff_text_offset[1] + y)
         finally:
             dc.Destroy()
+
+    def draw_replacement_line(
+        self, dc: wx.DC, index: int, panel_offset: int, line_height: int
+    ) -> None:
+        """Draw a line of text in replacement mode"""
+        settings = get_app().settings
+        line = self.contents.comparison_lines[index]
+        backgrounds = {
+            LineType.EQUAL: settings.replace_background,
+            LineType.INSERT: settings.insert_line_background,
+            LineType.DELETE: settings.delete_line_background,
+            LineType.REPLACE: settings.replace_background,
+        }
+        foregrounds = {
+            LineType.EQUAL: settings.replace_text,
+            LineType.INSERT: settings.insert_line_text,
+            LineType.DELETE: settings.delete_line_text,
+            LineType.REPLACE: settings.replace_text,
+        }
+        x = panel_offset
+        y = line_height * index
+        text_indent = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[0]
+        for chunk in line.line_analysis.chunks:
+            color = backgrounds[chunk.chunk_type]
+            dc.SetPen(wx.Pen(color))
+            dc.SetBrush(wx.Brush(color))
+            text_width, text_height = dc.GetTextExtent(chunk.text)
+            print(text_width, chunk)
+            dc.DrawRectangle(x, y, text_width, line_height)
+            dc.SetTextForeground(foregrounds[chunk.chunk_type])
+            dc.DrawText(chunk.text, x + text_indent, CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[1] + y)
+            x += text_width + text_indent
+            text_indent = 0
