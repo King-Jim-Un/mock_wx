@@ -1,3 +1,4 @@
-<Mock name='mock.dut.first.GetValue()' id='2047565988928'>
-<Mock name='mock.dut.last.GetValue()' id='2047565987920'>
-<Mock name='mock.dut.address.GetValue()' id='2047566000352'>
+David
+King
+15 Main St.
+Anytown, USA 12345
