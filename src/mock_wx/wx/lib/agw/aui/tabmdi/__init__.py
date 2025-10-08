@@ -1,0 +1,3 @@
+from wx.aui import AuiNotebook
+EVT_SIZE = {"EVT_SIZE"}
+class AuiMDIClientWindow(AuiNotebook): ...

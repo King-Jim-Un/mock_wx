@@ -1,6 +1,17 @@
-class TimeZone: ...
-class Tm: ...
+from wx.base_class import BaseClass
 Country = {"Country"}
-WeekFlags = {"WeekFlags"}
 Month = {"Month"}
 TZ = {"TZ"}
+WeekFlags = {"WeekFlags"}
+class TimeZone(BaseClass):
+    Offset = {"Offset"}
+class Tm(BaseClass):
+    WeekDay = {"WeekDay"}
+    hour = {"hour"}
+    mday = {"mday"}
+    min = {"min"}
+    mon = {"mon"}
+    msec = {"msec"}
+    sec = {"sec"}
+    yday = {"yday"}
+    year = {"year"}

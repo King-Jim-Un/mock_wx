@@ -1,103 +1,214 @@
-GridTableRequest = {"GridTableRequest"}
-GRIDTABLE_NOTIFY_ROWS_INSERTED = {"GRIDTABLE_NOTIFY_ROWS_INSERTED"}
-GRIDTABLE_NOTIFY_ROWS_APPENDED = {"GRIDTABLE_NOTIFY_ROWS_APPENDED"}
-GRIDTABLE_NOTIFY_ROWS_DELETED = {"GRIDTABLE_NOTIFY_ROWS_DELETED"}
-GRIDTABLE_NOTIFY_COLS_INSERTED = {"GRIDTABLE_NOTIFY_COLS_INSERTED"}
-GRIDTABLE_NOTIFY_COLS_APPENDED = {"GRIDTABLE_NOTIFY_COLS_APPENDED"}
-GRIDTABLE_NOTIFY_COLS_DELETED = {"GRIDTABLE_NOTIFY_COLS_DELETED"}
-class Grid(Scrolled): ...
-class GridCellAttrProvider(ClientDataContainer): ...
-class GridEditorCreatedEvent(CommandEvent): ...
-EVT_GRID_EDITOR_CREATED = {"EVT_GRID_EDITOR_CREATED"}
-EVT_GRID_CMD_EDITOR_CREATED = {"EVT_GRID_CMD_EDITOR_CREATED"}
-class GridTableBase(Object): ...
-class GridStringTable(GridTableBase): ...
-class GridCellRenderer(SharedClientDataContainer, RefCounter): ...
-class GridCellBoolRenderer(GridCellRenderer): ...
-class GridCellFloatRenderer(GridCellStringRenderer): ...
-class GridCellNumberRenderer(GridCellStringRenderer): ...
-class GridCellStringRenderer(GridCellRenderer): ...
-class GridCellDateRenderer(GridCellStringRenderer): ...
-class GridCellDateTimeRenderer(GridCellDateRenderer): ...
-class GridCellAttr(SharedClientDataContainer, RefCounter): ...
-ALIGN_LEFT = {"ALIGN_LEFT"}
+from wx import NotifyEvent, ClientDataContainer, SharedClientDataContainer, RefCounter, CommandEvent, Object, Scrolled
+from wx.base_class import BaseClass
 ALIGN_INVALID = {"ALIGN_INVALID"}
-class GridCellEditor(SharedClientDataContainer, RefCounter): ...
-class GridCellBoolEditor(GridCellEditor): ...
-class GridCellChoiceEditor(GridCellEditor): ...
-class GridCellFloatEditor(GridCellTextEditor): ...
-class GridCellNumberEditor(GridCellTextEditor): ...
-class GridCellTextEditor(GridCellEditor): ...
-class GridCellDateEditor(GridCellEditor): ...
-class GridEvent(NotifyEvent): ...
-EVT_GRID_CELL_CHANGING = {"EVT_GRID_CELL_CHANGING"}
+ALIGN_LEFT = {"ALIGN_LEFT"}
+AttrKind = {"AttrKind"}
 EVT_GRID_CELL_CHANGED = {"EVT_GRID_CELL_CHANGED"}
+EVT_GRID_CELL_CHANGING = {"EVT_GRID_CELL_CHANGING"}
 EVT_GRID_CELL_LEFT_CLICK = {"EVT_GRID_CELL_LEFT_CLICK"}
 EVT_GRID_CELL_LEFT_DCLICK = {"EVT_GRID_CELL_LEFT_DCLICK"}
 EVT_GRID_CELL_RIGHT_CLICK = {"EVT_GRID_CELL_RIGHT_CLICK"}
 EVT_GRID_CELL_RIGHT_DCLICK = {"EVT_GRID_CELL_RIGHT_DCLICK"}
+EVT_GRID_CMD_COL_SIZE = {"EVT_GRID_CMD_COL_SIZE"}
+EVT_GRID_CMD_EDITOR_CREATED = {"EVT_GRID_CMD_EDITOR_CREATED"}
+EVT_GRID_CMD_RANGE_SELECTED = {"EVT_GRID_CMD_RANGE_SELECTED"}
+EVT_GRID_CMD_RANGE_SELECTING = {"EVT_GRID_CMD_RANGE_SELECTING"}
+EVT_GRID_CMD_ROW_SIZE = {"EVT_GRID_CMD_ROW_SIZE"}
+EVT_GRID_COL_AUTO_SIZE = {"EVT_GRID_COL_AUTO_SIZE"}
+EVT_GRID_COL_MOVE = {"EVT_GRID_COL_MOVE"}
+EVT_GRID_COL_SIZE = {"EVT_GRID_COL_SIZE"}
+EVT_GRID_COL_SORT = {"EVT_GRID_COL_SORT"}
+EVT_GRID_EDITOR_CREATED = {"EVT_GRID_EDITOR_CREATED"}
 EVT_GRID_EDITOR_HIDDEN = {"EVT_GRID_EDITOR_HIDDEN"}
 EVT_GRID_EDITOR_SHOWN = {"EVT_GRID_EDITOR_SHOWN"}
 EVT_GRID_LABEL_LEFT_CLICK = {"EVT_GRID_LABEL_LEFT_CLICK"}
 EVT_GRID_LABEL_LEFT_DCLICK = {"EVT_GRID_LABEL_LEFT_DCLICK"}
 EVT_GRID_LABEL_RIGHT_CLICK = {"EVT_GRID_LABEL_RIGHT_CLICK"}
 EVT_GRID_LABEL_RIGHT_DCLICK = {"EVT_GRID_LABEL_RIGHT_DCLICK"}
-EVT_GRID_SELECT_CELL = {"EVT_GRID_SELECT_CELL"}
-EVT_GRID_ROW_MOVE = {"EVT_GRID_ROW_MOVE"}
-EVT_GRID_COL_MOVE = {"EVT_GRID_COL_MOVE"}
-EVT_GRID_COL_SORT = {"EVT_GRID_COL_SORT"}
-EVT_GRID_TABBING = {"EVT_GRID_TABBING"}
-class GridSizeEvent(NotifyEvent): ...
-EVT_GRID_CMD_COL_SIZE = {"EVT_GRID_CMD_COL_SIZE"}
-EVT_GRID_CMD_ROW_SIZE = {"EVT_GRID_CMD_ROW_SIZE"}
-EVT_GRID_ROW_AUTO_SIZE = {"EVT_GRID_ROW_AUTO_SIZE"}
-EVT_GRID_COL_SIZE = {"EVT_GRID_COL_SIZE"}
-EVT_GRID_COL_AUTO_SIZE = {"EVT_GRID_COL_AUTO_SIZE"}
-EVT_GRID_ROW_SIZE = {"EVT_GRID_ROW_SIZE"}
-class GridRangeSelectEvent(NotifyEvent): ...
-EVT_GRID_RANGE_SELECTING = {"EVT_GRID_RANGE_SELECTING"}
-EVT_GRID_CMD_RANGE_SELECTING = {"EVT_GRID_CMD_RANGE_SELECTING"}
 EVT_GRID_RANGE_SELECTED = {"EVT_GRID_RANGE_SELECTED"}
-EVT_GRID_CMD_RANGE_SELECTED = {"EVT_GRID_CMD_RANGE_SELECTED"}
-class GridUpdateLocker: ...
-class GridCellCoords: ...
-class GridFitMode: ...
-class GridSizesInfo: ...
-class GridBlocks: ...
-class GridTableMessage: ...
-class GridColumnHeaderRendererDefault(GridColumnHeaderRenderer): ...
-class GridColumnHeaderRenderer(GridHeaderLabelsRenderer): ...
-class GridCornerHeaderRendererDefault(GridCornerHeaderRenderer): ...
-class GridCornerHeaderRenderer(GridHeaderLabelsRenderer): ...
-class GridRowHeaderRendererDefault(GridRowHeaderRenderer): ...
-class GridRowHeaderRenderer(GridHeaderLabelsRenderer): ...
-class GridCellAutoWrapStringRenderer(GridCellStringRenderer): ...
-class GridCellEnumRenderer(GridCellStringRenderer): ...
-GridCellFloatFormat = {"GridCellFloatFormat"}
+EVT_GRID_RANGE_SELECTING = {"EVT_GRID_RANGE_SELECTING"}
+EVT_GRID_ROW_AUTO_SIZE = {"EVT_GRID_ROW_AUTO_SIZE"}
+EVT_GRID_ROW_MOVE = {"EVT_GRID_ROW_MOVE"}
+EVT_GRID_ROW_SIZE = {"EVT_GRID_ROW_SIZE"}
+EVT_GRID_SELECT_CELL = {"EVT_GRID_SELECT_CELL"}
+EVT_GRID_TABBING = {"EVT_GRID_TABBING"}
+GRIDTABLE_NOTIFY_COLS_APPENDED = {"GRIDTABLE_NOTIFY_COLS_APPENDED"}
+GRIDTABLE_NOTIFY_COLS_DELETED = {"GRIDTABLE_NOTIFY_COLS_DELETED"}
+GRIDTABLE_NOTIFY_COLS_INSERTED = {"GRIDTABLE_NOTIFY_COLS_INSERTED"}
+GRIDTABLE_NOTIFY_ROWS_APPENDED = {"GRIDTABLE_NOTIFY_ROWS_APPENDED"}
+GRIDTABLE_NOTIFY_ROWS_DELETED = {"GRIDTABLE_NOTIFY_ROWS_DELETED"}
+GRIDTABLE_NOTIFY_ROWS_INSERTED = {"GRIDTABLE_NOTIFY_ROWS_INSERTED"}
+GRID_FLOAT_FORMAT_COMPACT = {"GRID_FLOAT_FORMAT_COMPACT"}
+GRID_FLOAT_FORMAT_DEFAULT = {"GRID_FLOAT_FORMAT_DEFAULT"}
 GRID_FLOAT_FORMAT_FIXED = {"GRID_FLOAT_FORMAT_FIXED"}
 GRID_FLOAT_FORMAT_SCIENTIFIC = {"GRID_FLOAT_FORMAT_SCIENTIFIC"}
-GRID_FLOAT_FORMAT_COMPACT = {"GRID_FLOAT_FORMAT_COMPACT"}
 GRID_FLOAT_FORMAT_UPPER = {"GRID_FLOAT_FORMAT_UPPER"}
-GRID_FLOAT_FORMAT_DEFAULT = {"GRID_FLOAT_FORMAT_DEFAULT"}
-class GridCellActivatableEditor(GridCellEditor): ...
-class GridCellAutoWrapStringEditor(GridCellTextEditor): ...
-class GridCellEnumEditor(GridCellChoiceEditor): ...
-class GridActivationSource: ...
-class GridActivationResult: ...
-class GridHeaderLabelsRenderer: ...
-GridCellCoordsArray = {"GridCellCoordsArray"}
-GridSelectionModes = {"GridSelectionModes"}
-AttrKind = {"AttrKind"}
-GridWindow = {"GridWindow"}
-GridCellAttrPtr = {"GridCellAttrPtr"}
-TabBehaviour = {"TabBehaviour"}
-GRID_VALUE_STRING = {"GRID_VALUE_STRING"}
 GRID_VALUE_BOOL = {"GRID_VALUE_BOOL"}
-GRID_VALUE_NUMBER = {"GRID_VALUE_NUMBER"}
-GRID_VALUE_FLOAT = {"GRID_VALUE_FLOAT"}
 GRID_VALUE_CHOICE = {"GRID_VALUE_CHOICE"}
-GRID_VALUE_DATE = {"GRID_VALUE_DATE"}
-GRID_VALUE_TEXT = {"GRID_VALUE_TEXT"}
-GRID_VALUE_LONG = {"GRID_VALUE_LONG"}
 GRID_VALUE_CHOICEINT = {"GRID_VALUE_CHOICEINT"}
+GRID_VALUE_DATE = {"GRID_VALUE_DATE"}
 GRID_VALUE_DATETIME = {"GRID_VALUE_DATETIME"}
+GRID_VALUE_FLOAT = {"GRID_VALUE_FLOAT"}
+GRID_VALUE_LONG = {"GRID_VALUE_LONG"}
+GRID_VALUE_NUMBER = {"GRID_VALUE_NUMBER"}
+GRID_VALUE_STRING = {"GRID_VALUE_STRING"}
+GRID_VALUE_TEXT = {"GRID_VALUE_TEXT"}
+GridCellAttrPtr = {"GridCellAttrPtr"}
+GridCellCoordsArray = {"GridCellCoordsArray"}
+GridCellFloatFormat = {"GridCellFloatFormat"}
+GridSelectionModes = {"GridSelectionModes"}
+GridTableRequest = {"GridTableRequest"}
+GridWindow = {"GridWindow"}
+TabBehaviour = {"TabBehaviour"}
+class Grid(Scrolled):
+    BatchCount = {"BatchCount"}
+    CellHighlightColour = {"CellHighlightColour"}
+    CellHighlightPenWidth = {"CellHighlightPenWidth"}
+    CellHighlightROPenWidth = {"CellHighlightROPenWidth"}
+    ColLabelSize = {"ColLabelSize"}
+    ColLabelTextOrientation = {"ColLabelTextOrientation"}
+    ColMinimalAcceptableWidth = {"ColMinimalAcceptableWidth"}
+    ColSizes = {"ColSizes"}
+    CornerLabelTextOrientation = {"CornerLabelTextOrientation"}
+    CornerLabelValue = {"CornerLabelValue"}
+    DefaultCellBackgroundColour = {"DefaultCellBackgroundColour"}
+    DefaultCellFitMode = {"DefaultCellFitMode"}
+    DefaultCellFont = {"DefaultCellFont"}
+    DefaultCellOverflow = {"DefaultCellOverflow"}
+    DefaultCellTextColour = {"DefaultCellTextColour"}
+    DefaultColLabelSize = {"DefaultColLabelSize"}
+    DefaultColSize = {"DefaultColSize"}
+    DefaultEditor = {"DefaultEditor"}
+    DefaultGridLinePen = {"DefaultGridLinePen"}
+    DefaultRenderer = {"DefaultRenderer"}
+    DefaultRowLabelSize = {"DefaultRowLabelSize"}
+    DefaultRowSize = {"DefaultRowSize"}
+    FirstFullyVisibleColumn = {"FirstFullyVisibleColumn"}
+    FirstFullyVisibleRow = {"FirstFullyVisibleRow"}
+    FrozenColGridWindow = {"FrozenColGridWindow"}
+    FrozenCornerGridWindow = {"FrozenCornerGridWindow"}
+    FrozenRowGridWindow = {"FrozenRowGridWindow"}
+    GridColHeader = {"GridColHeader"}
+    GridColLabelWindow = {"GridColLabelWindow"}
+    GridCornerLabelWindow = {"GridCornerLabelWindow"}
+    GridCursorCol = {"GridCursorCol"}
+    GridCursorCoords = {"GridCursorCoords"}
+    GridCursorRow = {"GridCursorRow"}
+    GridLineColour = {"GridLineColour"}
+    GridRowLabelWindow = {"GridRowLabelWindow"}
+    GridWindow = {"GridWindow"}
+    LabelBackgroundColour = {"LabelBackgroundColour"}
+    LabelFont = {"LabelFont"}
+    LabelTextColour = {"LabelTextColour"}
+    NumberCols = {"NumberCols"}
+    NumberFrozenCols = {"NumberFrozenCols"}
+    NumberFrozenRows = {"NumberFrozenRows"}
+    NumberRows = {"NumberRows"}
+    RowLabelSize = {"RowLabelSize"}
+    RowMinimalAcceptableHeight = {"RowMinimalAcceptableHeight"}
+    RowSizes = {"RowSizes"}
+    ScrollLineX = {"ScrollLineX"}
+    ScrollLineY = {"ScrollLineY"}
+    SelectedBlocks = {"SelectedBlocks"}
+    SelectedCells = {"SelectedCells"}
+    SelectedColBlocks = {"SelectedColBlocks"}
+    SelectedCols = {"SelectedCols"}
+    SelectedRowBlocks = {"SelectedRowBlocks"}
+    SelectedRows = {"SelectedRows"}
+    SelectionBackground = {"SelectionBackground"}
+    SelectionBlockBottomRight = {"SelectionBlockBottomRight"}
+    SelectionBlockTopLeft = {"SelectionBlockTopLeft"}
+    SelectionForeground = {"SelectionForeground"}
+    SelectionMode = {"SelectionMode"}
+    SortingColumn = {"SortingColumn"}
+    Table = {"Table"}
+class GridActivationResult(BaseClass): ...
+class GridActivationSource(BaseClass):
+    KeyEvent = {"KeyEvent"}
+    MouseEvent = {"MouseEvent"}
+class GridBlocks(BaseClass): ...
+class GridCellAttr(SharedClientDataContainer, RefCounter):
+    BackgroundColour = {"BackgroundColour"}
+    FitMode = {"FitMode"}
+    Font = {"Font"}
+    Kind = {"Kind"}
+    Overflow = {"Overflow"}
+    TextColour = {"TextColour"}
+class GridCellAttrProvider(ClientDataContainer):
+    CornerRenderer = {"CornerRenderer"}
+class GridCellCoords(BaseClass):
+    Col = {"Col"}
+    Row = {"Row"}
+class GridCellEditor(SharedClientDataContainer, RefCounter):
+    Control = {"Control"}
+    Value = {"Value"}
+    Window = {"Window"}
+class GridCellActivatableEditor(GridCellEditor): ...
+class GridCellBoolEditor(GridCellEditor): ...
+class GridCellChoiceEditor(GridCellEditor): ...
+class GridCellDateEditor(GridCellEditor): ...
+class GridCellEnumEditor(GridCellChoiceEditor): ...
+class GridCellRenderer(SharedClientDataContainer, RefCounter): ...
+class GridCellBoolRenderer(GridCellRenderer): ...
+class GridCellStringRenderer(GridCellRenderer): ...
+class GridCellAutoWrapStringRenderer(GridCellStringRenderer): ...
+class GridCellDateRenderer(GridCellStringRenderer): ...
+class GridCellDateTimeRenderer(GridCellDateRenderer): ...
+class GridCellEnumRenderer(GridCellStringRenderer): ...
+class GridCellFloatRenderer(GridCellStringRenderer):
+    Format = {"Format"}
+    Precision = {"Precision"}
+    Width = {"Width"}
+class GridCellNumberRenderer(GridCellStringRenderer): ...
+class GridCellTextEditor(GridCellEditor): ...
+class GridCellAutoWrapStringEditor(GridCellTextEditor): ...
+class GridCellFloatEditor(GridCellTextEditor): ...
+class GridCellNumberEditor(GridCellTextEditor): ...
+class GridEditorCreatedEvent(CommandEvent):
+    Col = {"Col"}
+    Control = {"Control"}
+    Row = {"Row"}
+    Window = {"Window"}
+class GridEvent(NotifyEvent):
+    Col = {"Col"}
+    Position = {"Position"}
+    Row = {"Row"}
+class GridFitMode(BaseClass):
+    EllipsizeMode = {"EllipsizeMode"}
+class GridHeaderLabelsRenderer(BaseClass): ...
+class GridColumnHeaderRenderer(GridHeaderLabelsRenderer): ...
+class GridColumnHeaderRendererDefault(GridColumnHeaderRenderer): ...
+class GridCornerHeaderRenderer(GridHeaderLabelsRenderer): ...
+class GridCornerHeaderRendererDefault(GridCornerHeaderRenderer): ...
+class GridRangeSelectEvent(NotifyEvent):
+    BottomRightCoords = {"BottomRightCoords"}
+    BottomRow = {"BottomRow"}
+    LeftCol = {"LeftCol"}
+    RightCol = {"RightCol"}
+    TopLeftCoords = {"TopLeftCoords"}
+    TopRow = {"TopRow"}
+class GridRowHeaderRenderer(GridHeaderLabelsRenderer): ...
+class GridRowHeaderRendererDefault(GridRowHeaderRenderer): ...
+class GridSizeEvent(NotifyEvent):
+    Position = {"Position"}
+    RowOrCol = {"RowOrCol"}
+class GridSizesInfo(BaseClass):
+    m_sizeDefault = {"m_sizeDefault"}
+class GridTableBase(Object):
+    AttrProvider = {"AttrProvider"}
+    ColsCount = {"ColsCount"}
+    CornerLabelValue = {"CornerLabelValue"}
+    NumberCols = {"NumberCols"}
+    NumberRows = {"NumberRows"}
+    RowsCount = {"RowsCount"}
+    View = {"View"}
+class GridStringTable(GridTableBase):
+    CornerLabelValue = {"CornerLabelValue"}
+    NumberCols = {"NumberCols"}
+    NumberRows = {"NumberRows"}
+class GridTableMessage(BaseClass):
+    CommandInt = {"CommandInt"}
+    CommandInt2 = {"CommandInt2"}
+    Id = {"Id"}
+    TableObject = {"TableObject"}
+class GridUpdateLocker(BaseClass): ...

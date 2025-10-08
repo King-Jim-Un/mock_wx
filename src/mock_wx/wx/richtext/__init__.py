@@ -1,0 +1,582 @@
+from wx.adv import PropertySheetDialog
+from wx.html import HtmlListBox
+from wx import Printout, Dialog, Command, NotifyEvent, ComboCtrl, DataObjectSimple, Object, TextAttr, Control
+from wx.base_class import BaseClass
+EVT_RICHTEXT_BUFFER_RESET = {"EVT_RICHTEXT_BUFFER_RESET"}
+EVT_RICHTEXT_CHARACTER = {"EVT_RICHTEXT_CHARACTER"}
+EVT_RICHTEXT_CONSUMING_CHARACTER = {"EVT_RICHTEXT_CONSUMING_CHARACTER"}
+EVT_RICHTEXT_CONTENT_DELETED = {"EVT_RICHTEXT_CONTENT_DELETED"}
+EVT_RICHTEXT_CONTENT_INSERTED = {"EVT_RICHTEXT_CONTENT_INSERTED"}
+EVT_RICHTEXT_DELETE = {"EVT_RICHTEXT_DELETE"}
+EVT_RICHTEXT_FOCUS_OBJECT_CHANGED = {"EVT_RICHTEXT_FOCUS_OBJECT_CHANGED"}
+EVT_RICHTEXT_LEFT_CLICK = {"EVT_RICHTEXT_LEFT_CLICK"}
+EVT_RICHTEXT_LEFT_DCLICK = {"EVT_RICHTEXT_LEFT_DCLICK"}
+EVT_RICHTEXT_MIDDLE_CLICK = {"EVT_RICHTEXT_MIDDLE_CLICK"}
+EVT_RICHTEXT_PROPERTIES_CHANGED = {"EVT_RICHTEXT_PROPERTIES_CHANGED"}
+EVT_RICHTEXT_RETURN = {"EVT_RICHTEXT_RETURN"}
+EVT_RICHTEXT_RIGHT_CLICK = {"EVT_RICHTEXT_RIGHT_CLICK"}
+EVT_RICHTEXT_SELECTION_CHANGED = {"EVT_RICHTEXT_SELECTION_CHANGED"}
+EVT_RICHTEXT_STYLESHEET_CHANGED = {"EVT_RICHTEXT_STYLESHEET_CHANGED"}
+EVT_RICHTEXT_STYLESHEET_REPLACED = {"EVT_RICHTEXT_STYLESHEET_REPLACED"}
+EVT_RICHTEXT_STYLESHEET_REPLACING = {"EVT_RICHTEXT_STYLESHEET_REPLACING"}
+EVT_RICHTEXT_STYLE_CHANGED = {"EVT_RICHTEXT_STYLE_CHANGED"}
+ID_CLEAR = {"ID_CLEAR"}
+ID_COPY = {"ID_COPY"}
+ID_CUT = {"ID_CUT"}
+ID_PASTE = {"ID_PASTE"}
+ID_REDO = {"ID_REDO"}
+ID_SELECTALL = {"ID_SELECTALL"}
+ID_UNDO = {"ID_UNDO"}
+OK = {"OK"}
+RE_CENTER_CARET = {"RE_CENTER_CARET"}
+RE_CENTRE_CARET = {"RE_CENTRE_CARET"}
+RE_MULTILINE = {"RE_MULTILINE"}
+RE_READONLY = {"RE_READONLY"}
+RICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR = {"RICHTEXTSTYLELIST_HIDE_TYPE_SELECTOR"}
+RICHTEXT_CHANGE_ATTRIBUTES = {"RICHTEXT_CHANGE_ATTRIBUTES"}
+RICHTEXT_CHANGE_OBJECT = {"RICHTEXT_CHANGE_OBJECT"}
+RICHTEXT_CHANGE_STYLE = {"RICHTEXT_CHANGE_STYLE"}
+RICHTEXT_DELETE = {"RICHTEXT_DELETE"}
+RICHTEXT_FIELD_STYLE_COMPOSITE = {"RICHTEXT_FIELD_STYLE_COMPOSITE"}
+RICHTEXT_FIELD_STYLE_END_TAG = {"RICHTEXT_FIELD_STYLE_END_TAG"}
+RICHTEXT_FIELD_STYLE_NO_BORDER = {"RICHTEXT_FIELD_STYLE_NO_BORDER"}
+RICHTEXT_FIELD_STYLE_RECTANGLE = {"RICHTEXT_FIELD_STYLE_RECTANGLE"}
+RICHTEXT_FIELD_STYLE_START_TAG = {"RICHTEXT_FIELD_STYLE_START_TAG"}
+RICHTEXT_HANDLER_INCLUDE_STYLESHEET = {"RICHTEXT_HANDLER_INCLUDE_STYLESHEET"}
+RICHTEXT_HANDLER_NO_HEADER_FOOTER = {"RICHTEXT_HANDLER_NO_HEADER_FOOTER"}
+RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64 = {"RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64"}
+RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES = {"RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES"}
+RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY = {"RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY"}
+RICHTEXT_HANDLER_USE_CSS = {"RICHTEXT_HANDLER_USE_CSS"}
+RICHTEXT_INSERT = {"RICHTEXT_INSERT"}
+RICHTEXT_NO_SELECTION = {"RICHTEXT_NO_SELECTION"}
+RICHTEXT_ORGANISER_APPLY_STYLES = {"RICHTEXT_ORGANISER_APPLY_STYLES"}
+RICHTEXT_ORGANISER_BROWSE = {"RICHTEXT_ORGANISER_BROWSE"}
+RICHTEXT_ORGANISER_BROWSE_NUMBERING = {"RICHTEXT_ORGANISER_BROWSE_NUMBERING"}
+RICHTEXT_ORGANISER_CREATE_STYLES = {"RICHTEXT_ORGANISER_CREATE_STYLES"}
+RICHTEXT_ORGANISER_DELETE_STYLES = {"RICHTEXT_ORGANISER_DELETE_STYLES"}
+RICHTEXT_ORGANISER_EDIT_STYLES = {"RICHTEXT_ORGANISER_EDIT_STYLES"}
+RICHTEXT_ORGANISER_OK_CANCEL = {"RICHTEXT_ORGANISER_OK_CANCEL"}
+RICHTEXT_ORGANISER_ORGANISE = {"RICHTEXT_ORGANISER_ORGANISE"}
+RICHTEXT_ORGANISER_RENAME_STYLES = {"RICHTEXT_ORGANISER_RENAME_STYLES"}
+RICHTEXT_ORGANISER_RENUMBER = {"RICHTEXT_ORGANISER_RENUMBER"}
+RICHTEXT_ORGANISER_SHOW_ALL = {"RICHTEXT_ORGANISER_SHOW_ALL"}
+RICHTEXT_ORGANISER_SHOW_CHARACTER = {"RICHTEXT_ORGANISER_SHOW_CHARACTER"}
+RICHTEXT_ORGANISER_SHOW_LIST = {"RICHTEXT_ORGANISER_SHOW_LIST"}
+RICHTEXT_ORGANISER_SHOW_PARAGRAPH = {"RICHTEXT_ORGANISER_SHOW_PARAGRAPH"}
+RICHTEXT_PAGE_ALL = {"RICHTEXT_PAGE_ALL"}
+RICHTEXT_PAGE_CENTRE = {"RICHTEXT_PAGE_CENTRE"}
+RICHTEXT_PAGE_EVEN = {"RICHTEXT_PAGE_EVEN"}
+RICHTEXT_PAGE_LEFT = {"RICHTEXT_PAGE_LEFT"}
+RICHTEXT_PAGE_ODD = {"RICHTEXT_PAGE_ODD"}
+RICHTEXT_PAGE_RIGHT = {"RICHTEXT_PAGE_RIGHT"}
+RICHTEXT_SETPROPERTIES_CHARACTERS_ONLY = {"RICHTEXT_SETPROPERTIES_CHARACTERS_ONLY"}
+RICHTEXT_SETPROPERTIES_NONE = {"RICHTEXT_SETPROPERTIES_NONE"}
+RICHTEXT_SETPROPERTIES_PARAGRAPHS_ONLY = {"RICHTEXT_SETPROPERTIES_PARAGRAPHS_ONLY"}
+RICHTEXT_SETPROPERTIES_REMOVE = {"RICHTEXT_SETPROPERTIES_REMOVE"}
+RICHTEXT_SETPROPERTIES_RESET = {"RICHTEXT_SETPROPERTIES_RESET"}
+RICHTEXT_SETPROPERTIES_WITH_UNDO = {"RICHTEXT_SETPROPERTIES_WITH_UNDO"}
+RICHTEXT_SETSTYLE_CHARACTERS_ONLY = {"RICHTEXT_SETSTYLE_CHARACTERS_ONLY"}
+RICHTEXT_SETSTYLE_NONE = {"RICHTEXT_SETSTYLE_NONE"}
+RICHTEXT_SETSTYLE_OPTIMIZE = {"RICHTEXT_SETSTYLE_OPTIMIZE"}
+RICHTEXT_SETSTYLE_PARAGRAPHS_ONLY = {"RICHTEXT_SETSTYLE_PARAGRAPHS_ONLY"}
+RICHTEXT_SETSTYLE_REMOVE = {"RICHTEXT_SETSTYLE_REMOVE"}
+RICHTEXT_SETSTYLE_RENUMBER = {"RICHTEXT_SETSTYLE_RENUMBER"}
+RICHTEXT_SETSTYLE_RESET = {"RICHTEXT_SETSTYLE_RESET"}
+RICHTEXT_SETSTYLE_SPECIFY_LEVEL = {"RICHTEXT_SETSTYLE_SPECIFY_LEVEL"}
+RICHTEXT_SETSTYLE_WITH_UNDO = {"RICHTEXT_SETSTYLE_WITH_UNDO"}
+RICHTEXT_TYPE_ANY = {"RICHTEXT_TYPE_ANY"}
+RICHTEXT_TYPE_HTML = {"RICHTEXT_TYPE_HTML"}
+RICHTEXT_TYPE_PDF = {"RICHTEXT_TYPE_PDF"}
+RICHTEXT_TYPE_RTF = {"RICHTEXT_TYPE_RTF"}
+RICHTEXT_TYPE_TEXT = {"RICHTEXT_TYPE_TEXT"}
+RICHTEXT_TYPE_XML = {"RICHTEXT_TYPE_XML"}
+RichTextActionList = {"RichTextActionList"}
+RichTextCommandId = {"RichTextCommandId"}
+RichTextFileType = {"RichTextFileType"}
+RichTextFloatCollector = {"RichTextFloatCollector"}
+RichTextObjectList = {"RichTextObjectList"}
+RichTextObjectPtrArray = {"RichTextObjectPtrArray"}
+RichTextObjectPtrArrayArray = {"RichTextObjectPtrArrayArray"}
+RichTextOddEvenPage = {"RichTextOddEvenPage"}
+RichTextPageLocation = {"RichTextPageLocation"}
+RichTextRangeArray = {"RichTextRangeArray"}
+RichTextVariantArray = {"RichTextVariantArray"}
+TEXT_ATTR_UNITS_HUNDREDTHS_POINT = {"TEXT_ATTR_UNITS_HUNDREDTHS_POINT"}
+TEXT_ATTR_UNITS_MASK = {"TEXT_ATTR_UNITS_MASK"}
+TEXT_ATTR_UNITS_PERCENTAGE = {"TEXT_ATTR_UNITS_PERCENTAGE"}
+TEXT_ATTR_UNITS_PIXELS = {"TEXT_ATTR_UNITS_PIXELS"}
+TEXT_ATTR_UNITS_POINTS = {"TEXT_ATTR_UNITS_POINTS"}
+TEXT_ATTR_UNITS_TENTHS_MM = {"TEXT_ATTR_UNITS_TENTHS_MM"}
+TEXT_ATTR_URL = {"TEXT_ATTR_URL"}
+TEXT_BOX_ATTR_BOX_STYLE_NAME = {"TEXT_BOX_ATTR_BOX_STYLE_NAME"}
+TEXT_BOX_ATTR_CLEAR = {"TEXT_BOX_ATTR_CLEAR"}
+TEXT_BOX_ATTR_CLEAR_BOTH = {"TEXT_BOX_ATTR_CLEAR_BOTH"}
+TEXT_BOX_ATTR_CLEAR_LEFT = {"TEXT_BOX_ATTR_CLEAR_LEFT"}
+TEXT_BOX_ATTR_CLEAR_NONE = {"TEXT_BOX_ATTR_CLEAR_NONE"}
+TEXT_BOX_ATTR_CLEAR_RIGHT = {"TEXT_BOX_ATTR_CLEAR_RIGHT"}
+TEXT_BOX_ATTR_COLLAPSE_BORDERS = {"TEXT_BOX_ATTR_COLLAPSE_BORDERS"}
+TEXT_BOX_ATTR_COLLAPSE_FULL = {"TEXT_BOX_ATTR_COLLAPSE_FULL"}
+TEXT_BOX_ATTR_COLLAPSE_NONE = {"TEXT_BOX_ATTR_COLLAPSE_NONE"}
+TEXT_BOX_ATTR_CORNER_RADIUS = {"TEXT_BOX_ATTR_CORNER_RADIUS"}
+TEXT_BOX_ATTR_FLOAT = {"TEXT_BOX_ATTR_FLOAT"}
+TEXT_BOX_ATTR_FLOAT_LEFT = {"TEXT_BOX_ATTR_FLOAT_LEFT"}
+TEXT_BOX_ATTR_FLOAT_NONE = {"TEXT_BOX_ATTR_FLOAT_NONE"}
+TEXT_BOX_ATTR_FLOAT_RIGHT = {"TEXT_BOX_ATTR_FLOAT_RIGHT"}
+TEXT_BOX_ATTR_POSITION_ABSOLUTE = {"TEXT_BOX_ATTR_POSITION_ABSOLUTE"}
+TEXT_BOX_ATTR_POSITION_FIXED = {"TEXT_BOX_ATTR_POSITION_FIXED"}
+TEXT_BOX_ATTR_POSITION_MASK = {"TEXT_BOX_ATTR_POSITION_MASK"}
+TEXT_BOX_ATTR_POSITION_RELATIVE = {"TEXT_BOX_ATTR_POSITION_RELATIVE"}
+TEXT_BOX_ATTR_POSITION_STATIC = {"TEXT_BOX_ATTR_POSITION_STATIC"}
+TEXT_BOX_ATTR_VERTICAL_ALIGNMENT = {"TEXT_BOX_ATTR_VERTICAL_ALIGNMENT"}
+TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_BOTTOM = {"TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_BOTTOM"}
+TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_CENTRE = {"TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_CENTRE"}
+TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_NONE = {"TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_NONE"}
+TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_TOP = {"TEXT_BOX_ATTR_VERTICAL_ALIGNMENT_TOP"}
+TEXT_BOX_ATTR_WHITESPACE = {"TEXT_BOX_ATTR_WHITESPACE"}
+TEXT_BOX_ATTR_WHITESPACE_NONE = {"TEXT_BOX_ATTR_WHITESPACE_NONE"}
+TEXT_BOX_ATTR_WHITESPACE_NORMAL = {"TEXT_BOX_ATTR_WHITESPACE_NORMAL"}
+TEXT_BOX_ATTR_WHITESPACE_NO_WRAP = {"TEXT_BOX_ATTR_WHITESPACE_NO_WRAP"}
+TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED = {"TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED"}
+TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED_LINE = {"TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED_LINE"}
+TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED_WRAP = {"TEXT_BOX_ATTR_WHITESPACE_PREFORMATTED_WRAP"}
+TextAttrDimensionFlags = {"TextAttrDimensionFlags"}
+TextAttrUnits = {"TextAttrUnits"}
+TextBoxAttrClearStyle = {"TextBoxAttrClearStyle"}
+TextBoxAttrCollapseMode = {"TextBoxAttrCollapseMode"}
+TextBoxAttrFlags = {"TextBoxAttrFlags"}
+TextBoxAttrFloatStyle = {"TextBoxAttrFloatStyle"}
+TextBoxAttrPosition = {"TextBoxAttrPosition"}
+TextBoxAttrVerticalAlignment = {"TextBoxAttrVerticalAlignment"}
+TextBoxAttrWhitespaceMode = {"TextBoxAttrWhitespaceMode"}
+wxRichTextStyleType = {"wxRichTextStyleType"}
+class RichTextAction(Object):
+    Attributes = {"Attributes"}
+    Container = {"Container"}
+    ContainerAddress = {"ContainerAddress"}
+    IgnoreFirstTime = {"IgnoreFirstTime"}
+    Name = {"Name"}
+    NewParagraphs = {"NewParagraphs"}
+    Object = {"Object"}
+    OldParagraphs = {"OldParagraphs"}
+    Position = {"Position"}
+    Range = {"Range"}
+class RichTextAttr(TextAttr):
+    TextBoxAttr = {"TextBoxAttr"}
+    m_textBoxAttr = {"m_textBoxAttr"}
+class RichTextBufferDataObject(DataObjectSimple):
+    DataSize = {"DataSize"}
+    RichTextBuffer = {"RichTextBuffer"}
+class RichTextCommand(Command):
+    Actions = {"Actions"}
+class RichTextContextMenuPropertiesInfo(BaseClass):
+    Count = {"Count"}
+    Labels = {"Labels"}
+    Objects = {"Objects"}
+    m_labels = {"m_labels"}
+    m_objects = {"m_objects"}
+class RichTextCtrl(Control):
+    BasicStyle = {"BasicStyle"}
+    Buffer = {"Buffer"}
+    CaretAtLineStart = {"CaretAtLineStart"}
+    CaretPosition = {"CaretPosition"}
+    CaretPositionForDefaultStyle = {"CaretPositionForDefaultStyle"}
+    CommandProcessor = {"CommandProcessor"}
+    ContextMenu = {"ContextMenu"}
+    ContextMenuPropertiesInfo = {"ContextMenuPropertiesInfo"}
+    DefaultStyle = {"DefaultStyle"}
+    DefaultStyleEx = {"DefaultStyleEx"}
+    DelayedImageLoading = {"DelayedImageLoading"}
+    DelayedImageProcessingRequired = {"DelayedImageProcessingRequired"}
+    DelayedImageProcessingTime = {"DelayedImageProcessingTime"}
+    DelayedLayoutThreshold = {"DelayedLayoutThreshold"}
+    DimensionScale = {"DimensionScale"}
+    DragStartPoint = {"DragStartPoint"}
+    DragStartTime = {"DragStartTime"}
+    Dragging = {"Dragging"}
+    Filename = {"Filename"}
+    FirstVisiblePoint = {"FirstVisiblePoint"}
+    FirstVisiblePosition = {"FirstVisiblePosition"}
+    FocusObject = {"FocusObject"}
+    FontScale = {"FontScale"}
+    FullLayoutRequired = {"FullLayoutRequired"}
+    FullLayoutSavedPosition = {"FullLayoutSavedPosition"}
+    FullLayoutTime = {"FullLayoutTime"}
+    HandlerFlags = {"HandlerFlags"}
+    Hint = {"Hint"}
+    ImagesEnabled = {"ImagesEnabled"}
+    InsertionPoint = {"InsertionPoint"}
+    InternalSelectionRange = {"InternalSelectionRange"}
+    LastPosition = {"LastPosition"}
+    Margins = {"Margins"}
+    NumberOfLines = {"NumberOfLines"}
+    PreDrag = {"PreDrag"}
+    Scale = {"Scale"}
+    Selection = {"Selection"}
+    SelectionAnchor = {"SelectionAnchor"}
+    SelectionAnchorObject = {"SelectionAnchorObject"}
+    SelectionRange = {"SelectionRange"}
+    StringSelection = {"StringSelection"}
+    StyleSheet = {"StyleSheet"}
+    TextCursor = {"TextCursor"}
+    URLCursor = {"URLCursor"}
+    Value = {"Value"}
+    VerticalScrollbarEnabled = {"VerticalScrollbarEnabled"}
+    VirtualAttributesEnabled = {"VirtualAttributesEnabled"}
+class RichTextDrawingContext(Object):
+    DelayedImageLoading = {"DelayedImageLoading"}
+    ImagesEnabled = {"ImagesEnabled"}
+    LayingOut = {"LayingOut"}
+    VirtualAttributesEnabled = {"VirtualAttributesEnabled"}
+    m_buffer = {"m_buffer"}
+    m_enableDelayedImageLoading = {"m_enableDelayedImageLoading"}
+    m_enableImages = {"m_enableImages"}
+    m_enableVirtualAttributes = {"m_enableVirtualAttributes"}
+    m_layingOut = {"m_layingOut"}
+class RichTextDrawingHandler(Object):
+    Name = {"Name"}
+class RichTextEvent(NotifyEvent):
+    Character = {"Character"}
+    Container = {"Container"}
+    Flags = {"Flags"}
+    NewStyleSheet = {"NewStyleSheet"}
+    OldContainer = {"OldContainer"}
+    OldStyleSheet = {"OldStyleSheet"}
+    Position = {"Position"}
+    Range = {"Range"}
+class RichTextFieldType(Object):
+    Name = {"Name"}
+class RichTextFieldTypeStandard(RichTextFieldType):
+    BackgroundColour = {"BackgroundColour"}
+    Bitmap = {"Bitmap"}
+    BorderColour = {"BorderColour"}
+    DisplayStyle = {"DisplayStyle"}
+    Font = {"Font"}
+    HorizontalMargin = {"HorizontalMargin"}
+    HorizontalPadding = {"HorizontalPadding"}
+    Label = {"Label"}
+    TextColour = {"TextColour"}
+    VerticalMargin = {"VerticalMargin"}
+    VerticalPadding = {"VerticalPadding"}
+class RichTextFileHandler(Object):
+    Encoding = {"Encoding"}
+    Extension = {"Extension"}
+    Flags = {"Flags"}
+    Name = {"Name"}
+    Type = {"Type"}
+class RichTextFontTable(Object): ...
+class RichTextFormattingDialog(PropertySheetDialog):
+    Attributes = {"Attributes"}
+    ImageList = {"ImageList"}
+    Options = {"Options"}
+    StyleDefinition = {"StyleDefinition"}
+    StyleSheet = {"StyleSheet"}
+class RichTextFormattingDialogFactory(Object):
+    PageIdCount = {"PageIdCount"}
+class RichTextHTMLHandler(RichTextFileHandler):
+    FontSizeMapping = {"FontSizeMapping"}
+    TempDir = {"TempDir"}
+    TemporaryImageLocations = {"TemporaryImageLocations"}
+class RichTextHeaderFooterData(Object):
+    Font = {"Font"}
+    FooterMargin = {"FooterMargin"}
+    FooterText = {"FooterText"}
+    HeaderMargin = {"HeaderMargin"}
+    HeaderText = {"HeaderText"}
+    ShowOnFirstPage = {"ShowOnFirstPage"}
+    TextColour = {"TextColour"}
+class RichTextImageBlock(Object):
+    Data = {"Data"}
+    DataSize = {"DataSize"}
+    Extension = {"Extension"}
+    ImageType = {"ImageType"}
+class RichTextLine(BaseClass):
+    AbsolutePosition = {"AbsolutePosition"}
+    AbsoluteRange = {"AbsoluteRange"}
+    Descent = {"Descent"}
+    Parent = {"Parent"}
+    Position = {"Position"}
+    Range = {"Range"}
+    Rect = {"Rect"}
+    Size = {"Size"}
+class RichTextObject(Object):
+    AbsolutePosition = {"AbsolutePosition"}
+    Attributes = {"Attributes"}
+    BestSize = {"BestSize"}
+    BottomMargin = {"BottomMargin"}
+    Buffer = {"Buffer"}
+    CachedSize = {"CachedSize"}
+    Container = {"Container"}
+    Descent = {"Descent"}
+    FloatDirection = {"FloatDirection"}
+    LeftMargin = {"LeftMargin"}
+    MaxSize = {"MaxSize"}
+    MinSize = {"MinSize"}
+    Name = {"Name"}
+    NaturalSize = {"NaturalSize"}
+    OwnRange = {"OwnRange"}
+    OwnRangeIfTopLevel = {"OwnRangeIfTopLevel"}
+    Parent = {"Parent"}
+    ParentContainer = {"ParentContainer"}
+    Position = {"Position"}
+    Properties = {"Properties"}
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    Range = {"Range"}
+    Rect = {"Rect"}
+    RightMargin = {"RightMargin"}
+    TopMargin = {"TopMargin"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextCompositeObject(RichTextObject):
+    ChildCount = {"ChildCount"}
+    Children = {"Children"}
+class RichTextImage(RichTextObject):
+    ImageBlock = {"ImageBlock"}
+    ImageCache = {"ImageCache"}
+    ImageState = {"ImageState"}
+    NaturalSize = {"NaturalSize"}
+    OriginalImageSize = {"OriginalImageSize"}
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextObjectAddress(BaseClass):
+    Address = {"Address"}
+class RichTextParagraph(RichTextCompositeObject):
+    BulletText = {"BulletText"}
+    CombinedAttributes = {"CombinedAttributes"}
+    ImpactedByFloatingObjects = {"ImpactedByFloatingObjects"}
+    Lines = {"Lines"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextParagraphLayoutBox(RichTextCompositeObject):
+    BasicStyle = {"BasicStyle"}
+    DefaultStyle = {"DefaultStyle"}
+    FloatCollector = {"FloatCollector"}
+    FloatingObjectCount = {"FloatingObjectCount"}
+    InvalidRange = {"InvalidRange"}
+    LineCount = {"LineCount"}
+    ParagraphCount = {"ParagraphCount"}
+    PartialParagraph = {"PartialParagraph"}
+    RichTextCtrl = {"RichTextCtrl"}
+    StyleSheet = {"StyleSheet"}
+    Text = {"Text"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextBox(RichTextParagraphLayoutBox):
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextBuffer(RichTextParagraphLayoutBox):
+    BatchedCommand = {"BatchedCommand"}
+    CommandProcessor = {"CommandProcessor"}
+    DimensionScale = {"DimensionScale"}
+    FontScale = {"FontScale"}
+    FontTable = {"FontTable"}
+    HandlerFlags = {"HandlerFlags"}
+    Scale = {"Scale"}
+    StyleSheet = {"StyleSheet"}
+    StyleStackSize = {"StyleStackSize"}
+class RichTextCell(RichTextBox):
+    ColSpan = {"ColSpan"}
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    RowSpan = {"RowSpan"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextField(RichTextParagraphLayoutBox):
+    FieldType = {"FieldType"}
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextPlainText(RichTextObject):
+    Text = {"Text"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextPlainTextHandler(RichTextFileHandler): ...
+class RichTextPrinting(Object):
+    FooterText = {"FooterText"}
+    HeaderFooterData = {"HeaderFooterData"}
+    HeaderText = {"HeaderText"}
+    PageSetupData = {"PageSetupData"}
+    ParentWindow = {"ParentWindow"}
+    PreviewRect = {"PreviewRect"}
+    PrintData = {"PrintData"}
+    Title = {"Title"}
+class RichTextPrintout(Printout):
+    HeaderFooterData = {"HeaderFooterData"}
+    RichTextBuffer = {"RichTextBuffer"}
+class RichTextProperties(Object):
+    Count = {"Count"}
+    Properties = {"Properties"}
+    PropertyNames = {"PropertyNames"}
+class RichTextRange(BaseClass):
+    End = {"End"}
+    Length = {"Length"}
+    Start = {"Start"}
+class RichTextRenderer(Object): ...
+class RichTextSelection(BaseClass):
+    Container = {"Container"}
+    Count = {"Count"}
+    Range = {"Range"}
+    Ranges = {"Ranges"}
+    m_container = {"m_container"}
+    m_ranges = {"m_ranges"}
+class RichTextStdRenderer(RichTextRenderer): ...
+class RichTextStyleComboCtrl(ComboCtrl):
+    RichTextCtrl = {"RichTextCtrl"}
+    StyleSheet = {"StyleSheet"}
+class RichTextStyleDefinition(Object):
+    BaseStyle = {"BaseStyle"}
+    Description = {"Description"}
+    Name = {"Name"}
+    Properties = {"Properties"}
+    Style = {"Style"}
+class RichTextCharacterStyleDefinition(RichTextStyleDefinition): ...
+class RichTextParagraphStyleDefinition(RichTextStyleDefinition):
+    NextStyle = {"NextStyle"}
+class RichTextListStyleDefinition(RichTextParagraphStyleDefinition):
+    LevelCount = {"LevelCount"}
+class RichTextStyleListBox(HtmlListBox):
+    ApplyOnSelection = {"ApplyOnSelection"}
+    RichTextCtrl = {"RichTextCtrl"}
+    StyleSheet = {"StyleSheet"}
+    StyleType = {"StyleType"}
+class RichTextStyleListCtrl(Control):
+    RichTextCtrl = {"RichTextCtrl"}
+    StyleChoice = {"StyleChoice"}
+    StyleListBox = {"StyleListBox"}
+    StyleSheet = {"StyleSheet"}
+    StyleType = {"StyleType"}
+class RichTextStyleOrganiserDialog(Dialog):
+    Flags = {"Flags"}
+    RestartNumbering = {"RestartNumbering"}
+    RichTextCtrl = {"RichTextCtrl"}
+    SelectedStyle = {"SelectedStyle"}
+    SelectedStyleDefinition = {"SelectedStyleDefinition"}
+    StyleSheet = {"StyleSheet"}
+class RichTextStyleSheet(Object):
+    CharacterStyleCount = {"CharacterStyleCount"}
+    Description = {"Description"}
+    ListStyleCount = {"ListStyleCount"}
+    Name = {"Name"}
+    ParagraphStyleCount = {"ParagraphStyleCount"}
+    Properties = {"Properties"}
+class RichTextTable(RichTextBox):
+    Cells = {"Cells"}
+    ColumnCount = {"ColumnCount"}
+    FocusedCell = {"FocusedCell"}
+    PropertiesMenuLabel = {"PropertiesMenuLabel"}
+    RowCount = {"RowCount"}
+    XMLNodeName = {"XMLNodeName"}
+class RichTextXMLHandler(RichTextFileHandler): ...
+class SymbolPickerDialog(Dialog):
+    FontName = {"FontName"}
+    FromUnicode = {"FromUnicode"}
+    NormalTextFontName = {"NormalTextFontName"}
+    Symbol = {"Symbol"}
+    SymbolChar = {"SymbolChar"}
+class TextAttrBorder(BaseClass):
+    Colour = {"Colour"}
+    ColourLong = {"ColourLong"}
+    Flags = {"Flags"}
+    Style = {"Style"}
+    Width = {"Width"}
+    m_borderColour = {"m_borderColour"}
+    m_borderStyle = {"m_borderStyle"}
+    m_borderWidth = {"m_borderWidth"}
+    m_flags = {"m_flags"}
+class TextAttrBorders(BaseClass):
+    Bottom = {"Bottom"}
+    Left = {"Left"}
+    Right = {"Right"}
+    Top = {"Top"}
+    m_bottom = {"m_bottom"}
+    m_left = {"m_left"}
+    m_right = {"m_right"}
+    m_top = {"m_top"}
+class TextAttrDimension(BaseClass):
+    Flags = {"Flags"}
+    Position = {"Position"}
+    Units = {"Units"}
+    Value = {"Value"}
+    ValueMM = {"ValueMM"}
+    m_flags = {"m_flags"}
+    m_value = {"m_value"}
+class TextAttrDimensions(BaseClass):
+    Bottom = {"Bottom"}
+    Left = {"Left"}
+    Right = {"Right"}
+    Top = {"Top"}
+    m_bottom = {"m_bottom"}
+    m_left = {"m_left"}
+    m_right = {"m_right"}
+    m_top = {"m_top"}
+class TextAttrShadow(BaseClass):
+    BlurDistance = {"BlurDistance"}
+    Colour = {"Colour"}
+    ColourLong = {"ColourLong"}
+    Flags = {"Flags"}
+    OffsetX = {"OffsetX"}
+    OffsetY = {"OffsetY"}
+    Opacity = {"Opacity"}
+    Spread = {"Spread"}
+    m_blurDistance = {"m_blurDistance"}
+    m_flags = {"m_flags"}
+    m_offsetX = {"m_offsetX"}
+    m_offsetY = {"m_offsetY"}
+    m_opacity = {"m_opacity"}
+    m_shadowColour = {"m_shadowColour"}
+    m_spread = {"m_spread"}
+class TextAttrSize(BaseClass):
+    Height = {"Height"}
+    Width = {"Width"}
+    m_height = {"m_height"}
+    m_width = {"m_width"}
+class TextBoxAttr(BaseClass):
+    Border = {"Border"}
+    Bottom = {"Bottom"}
+    BottomBorder = {"BottomBorder"}
+    BottomMargin = {"BottomMargin"}
+    BottomOutline = {"BottomOutline"}
+    BottomPadding = {"BottomPadding"}
+    BoxStyleName = {"BoxStyleName"}
+    ClearMode = {"ClearMode"}
+    CollapseBorders = {"CollapseBorders"}
+    CornerRadius = {"CornerRadius"}
+    Flags = {"Flags"}
+    FloatMode = {"FloatMode"}
+    Height = {"Height"}
+    Left = {"Left"}
+    LeftBorder = {"LeftBorder"}
+    LeftMargin = {"LeftMargin"}
+    LeftOutline = {"LeftOutline"}
+    LeftPadding = {"LeftPadding"}
+    Margins = {"Margins"}
+    MaxSize = {"MaxSize"}
+    MinSize = {"MinSize"}
+    Outline = {"Outline"}
+    Padding = {"Padding"}
+    Position = {"Position"}
+    Right = {"Right"}
+    RightBorder = {"RightBorder"}
+    RightMargin = {"RightMargin"}
+    RightOutline = {"RightOutline"}
+    RightPadding = {"RightPadding"}
+    Shadow = {"Shadow"}
+    Size = {"Size"}
+    Top = {"Top"}
+    TopBorder = {"TopBorder"}
+    TopMargin = {"TopMargin"}
+    TopOutline = {"TopOutline"}
+    TopPadding = {"TopPadding"}
+    VerticalAlignment = {"VerticalAlignment"}
+    WhitespaceMode = {"WhitespaceMode"}
+    Width = {"Width"}
+    m_border = {"m_border"}
+    m_boxStyleName = {"m_boxStyleName"}
+    m_clearMode = {"m_clearMode"}
+    m_collapseMode = {"m_collapseMode"}
+    m_cornerRadius = {"m_cornerRadius"}
+    m_flags = {"m_flags"}
+    m_floatMode = {"m_floatMode"}
+    m_margins = {"m_margins"}
+    m_maxSize = {"m_maxSize"}
+    m_minSize = {"m_minSize"}
+    m_outline = {"m_outline"}
+    m_padding = {"m_padding"}
+    m_position = {"m_position"}
+    m_shadow = {"m_shadow"}
+    m_size = {"m_size"}
+    m_verticalAlignment = {"m_verticalAlignment"}
+    m_whitespaceMode = {"m_whitespaceMode"}

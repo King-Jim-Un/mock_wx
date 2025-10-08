@@ -1,0 +1,3 @@
+from wx.lib.stattext import GenStaticText
+EVT_SIZE = {"EVT_SIZE"}
+class AutoWrapStaticText(GenStaticText): ...

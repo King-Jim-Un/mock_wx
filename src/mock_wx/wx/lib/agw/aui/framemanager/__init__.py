@@ -1,0 +1,44 @@
+from wx import Frame, MiniFrame, PyCommandEvent, Window, EvtHandler
+from wx.base_class import BaseClass
+BOTTOM = {"BOTTOM"}
+CENTER = {"CENTER"}
+EAST = {"EAST"}
+EVT_ACTIVATE = {"EVT_ACTIVATE"}
+EVT_CHILD_FOCUS = {"EVT_CHILD_FOCUS"}
+EVT_CLOSE = {"EVT_CLOSE"}
+EVT_ERASE_BACKGROUND = {"EVT_ERASE_BACKGROUND"}
+EVT_IDLE = {"EVT_IDLE"}
+EVT_LEAVE_WINDOW = {"EVT_LEAVE_WINDOW"}
+EVT_LEFT_DCLICK = {"EVT_LEFT_DCLICK"}
+EVT_LEFT_DOWN = {"EVT_LEFT_DOWN"}
+EVT_LEFT_UP = {"EVT_LEFT_UP"}
+EVT_MOTION = {"EVT_MOTION"}
+EVT_MOUSE_CAPTURE_LOST = {"EVT_MOUSE_CAPTURE_LOST"}
+EVT_MOVE = {"EVT_MOVE"}
+EVT_MOVING = {"EVT_MOVING"}
+EVT_PAINT = {"EVT_PAINT"}
+EVT_SET_CURSOR = {"EVT_SET_CURSOR"}
+EVT_SIZE = {"EVT_SIZE"}
+EVT_SYS_COLOUR_CHANGED = {"EVT_SYS_COLOUR_CHANGED"}
+EVT_TIMER = {"EVT_TIMER"}
+LEFT = {"LEFT"}
+NORTH = {"NORTH"}
+RIGHT = {"RIGHT"}
+SOUTH = {"SOUTH"}
+TOP = {"TOP"}
+WEST = {"WEST"}
+class AuiDockInfo(BaseClass): ...
+class AuiDockUIPart(BaseClass): ...
+class AuiDockingGuide(Frame): ...
+class AuiCenterDockingGuide(AuiDockingGuide): ...
+class AuiDockingGuideInfo(BaseClass): ...
+class AuiDockingGuideWindow(Window): ...
+class AuiDockingHintWindow(Frame): ...
+class AuiFloatingFrame(MiniFrame): ...
+class AuiManager(EvtHandler): ...
+class AuiManagerEvent(PyCommandEvent): ...
+class AuiManager_DCP(AuiManager): ...
+class AuiPaneButton(BaseClass): ...
+class AuiPaneInfo(BaseClass):
+    dock_direction = {"dock_direction"}
+class AuiSingleDockingGuide(AuiDockingGuide): ...
