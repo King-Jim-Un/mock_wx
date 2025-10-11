@@ -1,4 +1,4 @@
-from wx.base_class import BaseClass
+from mock_wx._test_case import BaseClass
 from wx import Object, Window
 OR = {"OR"}
 WX_GL_RGBA = {"WX_GL_RGBA"}

@@ -1,5 +1,5 @@
+from mock_wx._test_case import BaseClass
 from wx import Object
-from wx.base_class import BaseClass
 Animation = {"Animation"}
 XML_ENTITY_NODE = {"XML_ENTITY_NODE"}
 XRCID = {"XRCID"}

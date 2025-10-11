@@ -1,5 +1,5 @@
-from wx import Frame, MiniFrame, PyCommandEvent, Window, EvtHandler
-from wx.base_class import BaseClass
+from wx import PyCommandEvent, Frame, EvtHandler, MiniFrame, Window
+from mock_wx._test_case import BaseClass
 BOTTOM = {"BOTTOM"}
 CENTER = {"CENTER"}
 EAST = {"EAST"}

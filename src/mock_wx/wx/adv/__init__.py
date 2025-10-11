@@ -1,5 +1,5 @@
-from wx import Button, Frame, Event, ItemContainer, HelpControllerBase, Dialog, ComboCtrl, NotifyEvent, Window, EvtHandler, ObjectRefData, Panel, CommandEvent, Object, Control, ComboBox
-from wx.base_class import BaseClass
+from wx import ObjectRefData, ItemContainer, CommandEvent, ComboBox, Frame, Object, EvtHandler, Button, Event, NotifyEvent, Window, HelpControllerBase, Dialog, Control, ComboCtrl, Panel
+from mock_wx._test_case import BaseClass
 AC_DEFAULT_STYLE = {"AC_DEFAULT_STYLE"}
 AC_NO_AUTORESIZE = {"AC_NO_AUTORESIZE"}
 ANIMATION_TYPE_ANI = {"ANIMATION_TYPE_ANI"}

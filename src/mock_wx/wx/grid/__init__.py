@@ -1,5 +1,5 @@
-from wx import NotifyEvent, ClientDataContainer, SharedClientDataContainer, RefCounter, CommandEvent, Object, Scrolled
-from wx.base_class import BaseClass
+from wx import SharedClientDataContainer, Object, CommandEvent, NotifyEvent, Scrolled, ClientDataContainer, RefCounter
+from mock_wx._test_case import BaseClass
 ALIGN_INVALID = {"ALIGN_INVALID"}
 ALIGN_LEFT = {"ALIGN_LEFT"}
 AttrKind = {"AttrKind"}

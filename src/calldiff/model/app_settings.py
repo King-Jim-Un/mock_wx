@@ -19,5 +19,7 @@ class AppSettings(Settings):
 
     maximize: bool = False
     window_rect: Optional[wx.Rect] = None
+    sash_position: int = 250
+
     logging_level: int = logging.WARNING
     log_file: Optional[Path] = None

@@ -2,9 +2,8 @@
 
 from enum import Enum, auto
 import logging
-from typing import Tuple, NewType
+from pathlib import Path
 import wx
-from mypy.types import NewType
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -38,3 +37,13 @@ class CONSTANTS:
             LINE_NUM_OFFSET = (5, 2)
             DIVIDER_WIDTH = 2
             DIFF_TEXT_OFFSET = (5, 2)
+
+    class PUBSUB:
+        NEW_NODE = "NEW_NODE"
+        UPDATE_NODE = "UPDATE_NODE"
+
+    class PATHS:
+        CALL_DIFF = Path(__file__).parent.resolve()
+        ROOT = CALL_DIFF.parents[1].resolve()
+        MOCK_WX = CALL_DIFF.parent / "mock_wx"
+        TEST_RUNNER = MOCK_WX / "__main__.py"

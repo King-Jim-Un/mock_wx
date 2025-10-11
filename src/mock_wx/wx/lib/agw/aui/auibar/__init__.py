@@ -1,5 +1,5 @@
 from wx import Control
-from wx.base_class import BaseClass
+from mock_wx._test_case import BaseClass
 ALIGN_CENTER_HORIZONTAL = {"ALIGN_CENTER_HORIZONTAL"}
 ALIGN_CENTER_VERTICAL = {"ALIGN_CENTER_VERTICAL"}
 AUI_BUTTON_STATE_CHECKED = {"AUI_BUTTON_STATE_CHECKED"}

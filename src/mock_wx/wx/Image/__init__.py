@@ -1,4 +1,4 @@
-from wx.base_class import BaseClass
+from mock_wx._test_case import BaseClass
 class HSVValue(BaseClass):
     hue = {"hue"}
     saturation = {"saturation"}

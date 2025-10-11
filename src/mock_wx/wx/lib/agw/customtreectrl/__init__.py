@@ -1,6 +1,6 @@
-from wx import Timer, Object, ScrolledWindow, CommandEvent
-from wx.base_class import BaseClass
+from wx import Object, Timer, CommandEvent, ScrolledWindow
 from wx.lib.expando import ExpandoTextCtrl
+from mock_wx._test_case import BaseClass
 CHK_CHECKED = {"CHK_CHECKED"}
 CHK_UNCHECKED = {"CHK_UNCHECKED"}
 CHK_UNDETERMINED = {"CHK_UNDETERMINED"}

@@ -1,6 +1,6 @@
-from wx.base_class import BaseClass
-from wx import PyCommandEvent, Dialog, Window, Panel, Control
 from wx.lib.expando import ExpandoTextCtrl
+from wx import PyCommandEvent, Window, Dialog, Control, Panel
+from mock_wx._test_case import BaseClass
 BOTTOM = {"BOTTOM"}
 DefaultSize = {"DefaultSize"}
 EVT_CHAR = {"EVT_CHAR"}

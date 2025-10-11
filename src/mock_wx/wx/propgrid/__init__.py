@@ -1,5 +1,5 @@
-from wx import Dialog, Window, Panel, EvtHandler, ObjectRefData, CommandEvent, Object, Scrolled
-from wx.base_class import BaseClass
+from wx import ObjectRefData, Object, CommandEvent, EvtHandler, Window, Dialog, Scrolled, Panel
+from mock_wx._test_case import BaseClass
 ArrayPGProperty = {"ArrayPGProperty"}
 BOTTOM = {"BOTTOM"}
 EVT_PG_CHANGED = {"EVT_PG_CHANGED"}

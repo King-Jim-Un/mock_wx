@@ -1,5 +1,5 @@
 from wx import Control, NotifyEvent, CommandEvent
-from wx.base_class import BaseClass
+from mock_wx._test_case import BaseClass
 BOTH = {"BOTH"}
 EVT_RIBBONBAR_HELP_CLICK = {"EVT_RIBBONBAR_HELP_CLICK"}
 EVT_RIBBONBAR_PAGE_CHANGED = {"EVT_RIBBONBAR_PAGE_CHANGED"}

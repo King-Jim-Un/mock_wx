@@ -1,5 +1,5 @@
-from wx import VListBox, Frame, ItemContainer, HelpControllerBase, Dialog, Window, CommandEvent, Object, Scrolled, Printout
-from wx.base_class import BaseClass
+from wx import ItemContainer, CommandEvent, Object, Frame, Window, HelpControllerBase, Dialog, Printout, Scrolled, VListBox
+from mock_wx._test_case import BaseClass
 BORDER_SUNKEN = {"BORDER_SUNKEN"}
 EVT_HTML_CELL_CLICKED = {"EVT_HTML_CELL_CLICKED"}
 EVT_HTML_CELL_HOVER = {"EVT_HTML_CELL_HOVER"}

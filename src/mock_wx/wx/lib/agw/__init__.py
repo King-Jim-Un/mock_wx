@@ -1,4 +1,4 @@
-from wx.base_class import G_MOCK
+from mock_wx._test_case import G_MOCK
 CONTROL_EXPANDED = {"CONTROL_EXPANDED"}
 DragImage = {"DragImage"}
 TR_EDIT_LABELS = {"TR_EDIT_LABELS"}

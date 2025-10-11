@@ -1,9 +1,12 @@
-from mock_wx import wxTestCase, note_func, patch
+from mock_wx.test_case import wxTestCase, note_func, patch
 
+import logging
 from unittest.mock import mock_open, call
 import wx
 
 import sample1
+
+LOG = logging.getLogger(__name__)
 
 
 class TestMainFrame(wxTestCase):
@@ -96,6 +99,7 @@ class TestMainFrame(wxTestCase):
 
         event = wx.CommandEvent()
         expect += [call.CommandEvent()]
+        print("printed message")
 
         self.mock.dut.first.GetValue.return_value = "first"
         self.mock.dut.last.GetValue.return_value = "last"
@@ -119,6 +123,7 @@ class TestMainFrame(wxTestCase):
         event = wx.CloseEvent()
         expect += [call.CloseEvent()]
 
+        LOG.info("in-band log message")
         self.mock.dut.first.GetValue.return_value = "first"
         self.mock.dut.last.GetValue.return_value = "last"
         self.mock.dut.address.GetValue.return_value = "address1\naddress2"
@@ -137,3 +142,5 @@ class TestMainFrame(wxTestCase):
             call.sample1.open().close(),
         ]
         self.check(expect)
+
+LOG.debug("out-of-band log message")

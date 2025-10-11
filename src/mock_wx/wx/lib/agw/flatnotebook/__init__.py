@@ -1,4 +1,4 @@
-from wx import Panel, Dialog
+from wx import Dialog, Panel
 EVT_ERASE_BACKGROUND = {"EVT_ERASE_BACKGROUND"}
 EVT_KEY_UP = {"EVT_KEY_UP"}
 EVT_LISTBOX_DCLICK = {"EVT_LISTBOX_DCLICK"}

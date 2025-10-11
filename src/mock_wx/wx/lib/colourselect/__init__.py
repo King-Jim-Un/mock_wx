@@ -1,5 +1,5 @@
+from mock_wx._test_case import BaseClass
 from wx.lib.buttons import GenBitmapButton
-from wx.base_class import BaseClass
 EVT_BUTTON = {"EVT_BUTTON"}
 class ColourSelect(GenBitmapButton):
     Colour = {"Colour"}

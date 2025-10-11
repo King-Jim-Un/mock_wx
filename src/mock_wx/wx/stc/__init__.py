@@ -1,4 +1,4 @@
-from wx import TextEntry, Control, CommandEvent
+from wx import Control, CommandEvent, TextEntry
 CharBuffer = {"CharBuffer"}
 EVT_STC_AUTOCOMP_CANCELLED = {"EVT_STC_AUTOCOMP_CANCELLED"}
 EVT_STC_AUTOCOMP_CHAR_DELETED = {"EVT_STC_AUTOCOMP_CHAR_DELETED"}

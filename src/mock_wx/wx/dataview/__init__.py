@@ -1,5 +1,5 @@
-from wx.base_class import BaseClass
-from wx import NotifyEvent, Window, RefCounter, Object, SettableHeaderColumn, Control
+from wx import Object, SettableHeaderColumn, NotifyEvent, Window, Control, RefCounter
+from mock_wx._test_case import BaseClass
 CHK_CHECKED = {"CHK_CHECKED"}
 CHK_UNCHECKED = {"CHK_UNCHECKED"}
 CHK_UNDETERMINED = {"CHK_UNDETERMINED"}

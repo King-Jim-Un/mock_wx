@@ -34,7 +34,7 @@ class Converter:
             "MaskedEditMixin": "wx.lib.masked.maskededit",
             "MaskedEditAccessorsMixin": "wx.lib.masked.maskededit",
             "BaseMaskedTextCtrl": "wx.lib.masked.textctrl",
-            "BaseClass": "wx.base_class",
+            "BaseClass": "mock_wx._test_case",
         }
 
     def convert_file(self, dir_path, pyi_path, mock_path) -> None:
@@ -67,9 +67,9 @@ class Converter:
                 funcs.append(name)
                 if name not in self.class_map:
                     self.class_map[name] = dir_path
-                if "base_class" not in imports:
-                    imports["wx.base_class"] = set()
-                imports["wx.base_class"].add("G_MOCK")
+                if "mock_wx._test_case" not in imports:
+                    imports["mock_wx._test_case"] = set()
+                imports["mock_wx._test_case"].add("G_MOCK")
                 last_class = None
                 continue
 

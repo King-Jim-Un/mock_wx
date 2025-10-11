@@ -3,6 +3,7 @@
 import logging
 import wx
 
+from calldiff.constants import CONSTANTS
 from calldiff.model.preferences import Preferences
 from calldiff.model.live_data import LiveData
 from calldiff.view.main_frame import MainFrame
@@ -32,6 +33,9 @@ class CallDiffApp(wx.App):
         if self.settings.maximize:
             self.frame.Maximize()
         self.frame.Show()
+
+        from calldiff.control.run_tests import RunTestsThread
+        RunTestsThread(CONSTANTS.PATHS.ROOT / "scratch").start()
 
         return True
 

@@ -1,6 +1,6 @@
-from wx.base_class import BaseClass
-from wx import PyCommandEvent, Control, Object, ScrolledWindow
 from wx.lib.expando import ExpandoTextCtrl
+from wx import Control, Object, PyCommandEvent, ScrolledWindow
+from mock_wx._test_case import BaseClass
 EVT_CHAR = {"EVT_CHAR"}
 EVT_CHILD_FOCUS = {"EVT_CHILD_FOCUS"}
 EVT_ENTER_WINDOW = {"EVT_ENTER_WINDOW"}
