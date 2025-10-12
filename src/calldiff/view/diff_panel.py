@@ -9,28 +9,22 @@ _ = wx.GetTranslation
 
 from calldiff import application
 from calldiff.constants import CONSTANTS, LineType
-from calldiff.model.comparison import HashableComparison
 
 
 class DiffPanel(wx.ScrolledCanvas):
-    contents: HashableComparison
     font: wx.Font
 
     def __init__(self, *args, **kwargs) -> None:
         """Constructor"""
         super().__init__(*args, **kwargs)
         app = application.get_app()
-        self.contents = HashableComparison()
         self.font = wx.Font(app.settings.font_size, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.Bind(wx.EVT_PAINT, self.on_paint)
-
-    def set_contents(self, contents: HashableComparison) -> None:
-        """Set the diff's contents"""
-        self.contents = contents
 
     def on_paint(self, _event: wx.PaintEvent) -> None:
         """Handle paint event"""
         app = application.get_app()
+        contents = app.live_data.compare_exception
         settings = app.settings
         backgrounds = {
             LineType.EQUAL: settings.equal_background,
@@ -51,10 +45,12 @@ class DiffPanel(wx.ScrolledCanvas):
 
             dc.SetBackground(wx.Brush(settings.desktop_background))
             dc.Clear()
+            if contents is None:
+                return
 
             # Get line size
             dc.SetFont(self.font)
-            text = str(self.contents.last_line_num())
+            text = str(contents.last_line_num())
             max_width, max_height = dc.GetTextExtent(text)
             col_width = int(max_width * CONSTANTS.WINDOWS.DIFF.LINE_NUM_SCALE[0])
             line_height = int(max_height * CONSTANTS.WINDOWS.DIFF.LINE_NUM_SCALE[1])
@@ -69,7 +65,7 @@ class DiffPanel(wx.ScrolledCanvas):
             diff_text_offset = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET
 
             # Loop over lines
-            for index, line in enumerate(self.contents.comparison_lines):
+            for index, line in enumerate(contents.comparison_lines):
                 color = backgrounds[line.line_type]
                 dc.SetPen(wx.Pen(color))
                 dc.SetBrush(wx.Brush(color))
@@ -92,8 +88,10 @@ class DiffPanel(wx.ScrolledCanvas):
 
     def draw_replacement_line(self, dc: wx.DC, index: int, panel_offset: int, line_height: int) -> None:
         """Draw a line of text in replacement mode"""
-        settings = application.get_app().settings
-        line = self.contents.comparison_lines[index]
+        app = application.get_app()
+        contents = app.live_data.compare_exception
+        settings = app.settings
+        line = contents.comparison_lines[index]
         backgrounds = {
             LineType.EQUAL: settings.replace_background,
             LineType.INSERT: settings.insert_line_background,

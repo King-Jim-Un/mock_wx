@@ -25,39 +25,15 @@ class MainFrame(wx.Frame):
         app.live_data.tree_root.node_id = self.tree.AddRoot(_("Tests"), data=app.live_data.tree_root)
         self.diff_panel = DiffPanel(self.splitter, name="diff_panel")
         self.splitter.SplitVertically(self.tree, self.diff_panel, app.settings.sash_position)
-        self.set_data()
 
         self.Bind(wx.EVT_CLOSE, self.on_close)
         pub.subscribe(self.new_node, CONSTANTS.PUBSUB.NEW_NODE)
         pub.subscribe(self.update_node, CONSTANTS.PUBSUB.UPDATE_NODE)
+        pub.subscribe(self.set_data, CONSTANTS.PUBSUB.TEST_COMPLETE)
 
     def set_data(self):  # TODO REMOVE THIS
-        from unittest.mock import Mock, mock_open, call
-        from calldiff.model.comparison import HashableComparison
-        mock = Mock()
-        mock_open(mock.open, "some read data")
-        mock.one()
-        mock.two.three().four()
-        mock.five(6, 7, 8, 9, 10, eleven=12, thirteen=14).thirteen("fourteen")
-        with mock.open("test", "rt") as file_obj:
-            mock.write(file_obj.read())
-        expect = [
-            call.one(),
-            call.two.three(),
-            call.two.three().four(),
-            call.five(6, 7, 8, 9, 10, thirteen=14, eleven=12),
-            call.five().thirteen("fourteen"),
-            call.open("tst", "rt"),
-            call.open("tet", "rt"),
-            call.open().__enter__(),
-            call.open().read(),
-            call.write("some read data"),
-            call.open().__exit__(None, None, None),
-            call.open().close(),
-        ]
-        comparison = HashableComparison(expect, mock)
-        comparison.compare()
-        self.diff_panel.set_contents(comparison)
+        application.get_app().live_data.compare_exception.compare()
+        self.diff_panel.Refresh()
 
     def on_close(self, event: wx.CloseEvent) -> None:
         """Save the frame size before closing"""

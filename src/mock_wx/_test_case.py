@@ -1,13 +1,18 @@
 from argparse import Namespace
 from importlib import import_module
-from typing import Tuple, Any
+import os
+from typing import Tuple, Any, List
 from unittest import TestCase
-from unittest.mock import Mock
+from unittest.mock import Mock, _Call
 
 # Globals:
 G_APP = None
 G_MOCK = Mock()
 G_OBJS = Namespace()
+
+# Types:
+CallParts = Tuple[str, List[str], List[Tuple[str, str]]]
+CallList = List[CallParts]
 
 
 def _find_patch_path(patch_str: str) -> Tuple[Any, Mock, str, Any]:
@@ -79,6 +84,14 @@ class BaseClass:
         return getattr(self._mock, name)
 
 
+class CallDifference(Exception):
+    def __init__(self, expect: CallList, actual: CallList):
+        self.expect, self.actual = expect, actual
+
+    def __str__(self):
+        return "<CallDifference>"
+
+
 class wxTestCase(TestCase):
     """Base class for user test suites"""
     test_case: "wxTestCase"
@@ -143,6 +156,8 @@ class wxTestCase(TestCase):
             """Internal object for context"""
 
             def __enter__(self):
+                global G_OBJS
+
                 G_MOCK.reset_mock()
                 G_OBJS = Namespace()
                 for patch_str in patches:
@@ -169,9 +184,23 @@ class wxTestCase(TestCase):
 
         return CreateApp()
 
-    def check(self, expect):
+    def check(self, expect: List[_Call]):
         """Check the expectations against mock calls"""
-        self.mock.assert_has_calls(expect)
+        if "CALL_DIFF_RUNNER" in os.environ:
+            expected: CallList = []
+            for item in expect:
+                args = [repr(arg) for arg in item[1]]
+                kwargs = [(key, repr(value)) for key, value in item[2].items()]
+                expected.append((item[0], args, kwargs))
+            actual: CallList = []
+            for item in self.mock.mock_calls:
+                args = [repr(arg) for arg in item[1]]
+                kwargs = [(key, repr(value)) for key, value in item[2].items()]
+                actual.append((item[0], args, kwargs))
+            if expected != actual:
+                raise CallDifference(expected, actual)
+        else:
+            self.mock.assert_has_calls(expect)
 
     @property
     def app(self):

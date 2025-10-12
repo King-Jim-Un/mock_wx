@@ -2,7 +2,10 @@
 
 from dataclasses import dataclass, field
 import logging
+from typing import Optional
 import wx
+
+from calldiff.model.comparison import HashableComparison
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -18,3 +21,4 @@ class TestsRoot:
 class LiveData:
     """Application data not saved/restored between runs"""
     tree_root: TestsRoot = field(default_factory=TestsRoot)
+    compare_exception: Optional[HashableComparison] = None

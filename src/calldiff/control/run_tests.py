@@ -14,6 +14,7 @@ from mock_wx.test_runner import Actions, FileDetails, TestCaseDetails, TestDetai
 
 from calldiff import application
 from calldiff.constants import CONSTANTS
+from calldiff.model.comparison import HashableComparison
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -34,6 +35,9 @@ class TestFunction:
     stream: List[Tuple[Actions, str]] = field(default_factory=list)
     node_id: wx.TreeItemId = field(default_factory=wx.TreeItemId)
 
+    def __str__(self) -> str:
+        return f"{self.func_name} ({self.doc_string})" if self.doc_string else self.func_name
+
 
 @dataclass
 class TestClass:
@@ -44,6 +48,9 @@ class TestClass:
     tests: List[TestFunction] = field(default_factory=list)
     node_id: wx.TreeItemId = field(default_factory=wx.TreeItemId)
 
+    def __str__(self) -> str:
+        return f"{self.class_name} ({self.doc_string})" if self.doc_string else self.class_name
+
 
 @dataclass
 class TestFile:
@@ -52,6 +59,9 @@ class TestFile:
     doc_string: Optional[str] = None
     test_classes: List[TestClass] = field(default_factory=list)
     node_id: wx.TreeItemId = field(default_factory=wx.TreeItemId)
+
+    def __str__(self) -> str:
+        return f"{self.path.name} ({self.doc_string})" if self.doc_string else self.path.name
 
 
 class RunTestsThread(Thread):
@@ -125,14 +135,6 @@ class RunTestsThread(Thread):
                 self.running_test = self.objects_by_id[payload]
             elif action == Actions.EXIT:
                 LOG.debug("return-code: %r", payload)
-        for path, test_file in self.test_files.items():
-            print(f"{str(path)}:")
-            print(f"    {test_file.import_failure} {repr(test_file.doc_string)}")
-            for test_class in test_file.test_classes:
-                print(f"    {test_class.class_name}:")
-                print(f"        {test_class.inst_failure} {repr(test_class.doc_string)}")
-                for test in test_class.tests:
-                    print(f"        {test.func_name}:")
-                    print(f"            {repr(test.doc_string)} {test.run_failure} {test.completed}")
-                    for action, text in test.stream:
-                        print(f"            {action.name}({repr(text)})")
+        failure = self.test_files[list(self.test_files)[0]].test_classes[0].tests[1].run_failure  # TODO
+        application.get_app().live_data.compare_exception = HashableComparison.from_exception(failure)  # TODO
+        safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)

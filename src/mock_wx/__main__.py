@@ -1,11 +1,13 @@
 from argparse import Namespace, ArgumentParser
 import logging
+import os
 from pathlib import Path
 import sys
 
 from mock_wx.test_runner import Tester, Actions
 
 def main(cmdline: Namespace) -> int:
+    os.environ["CALL_DIFF_RUNNER"] = ""
     sys.path.append(str(cmdline.base_dir))
     tester = Tester(cmdline)
     logging.basicConfig(level=getattr(logging, args.log_level), stream=tester.log)
