@@ -113,6 +113,9 @@ class ComparisonLine:
         else:
             return str(self.expect) if self.expect else str(self.actual)
 
+    def to_copy(self) -> str:
+        return f"{str(self.actual)}\n" if self.actual else ""
+
 
 CallList = NewType("CallList", List[HashableCall])
 

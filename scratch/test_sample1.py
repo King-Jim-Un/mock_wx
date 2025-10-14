@@ -78,8 +78,8 @@ class TestMainFrame(wxTestCase):
             call.Point(60, 40),
             call.dut.last(self.objs.Panel[0], -1, "", self.objs.Point[3], name="last"),
             call.dut.last.Bind({"EVT_TEXT"}, self.dut.on_edit),
-            call.Point(10, 75),
-            call.StaticText(self.objs.Panel[0], -1, "Address:", self.objs.Point[4]),
+            call.Point(10, 75, 1000),
+            call.StaticText(self.objs.Panel[0], -1, "Address:", self.objs.Point[4], 1000),
             call.Point(60, 70),
             call.Size(250, 70),
             call.dut.address(

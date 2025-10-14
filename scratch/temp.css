@@ -9,7 +9,7 @@
     delete-line-text: rgb(255, 255, 255);
     insert-line-background: rgb(54, 124, 54);
     insert-line-text: rgb(255, 255, 255);
-    replace-background: rgb(159, 159, 159);
+    replace-background: rgb(198, 198, 198);
     replace-text: rgb(0, 0, 0);
     replace-delete-background: rgb(106, 32, 32);
     replace-delete-text: rgb(255, 255, 255);
@@ -21,8 +21,8 @@
     hover-insert-line-text: rgb(0, 0, 0);
     hover-replace-background: rgb(0, 0, 0);
     hover-replace-text: rgb(159, 159, 159);
-    hover-replace-delete-background: rgb(106, 32, 32);
+    hover-replace-delete-background: rgb(189, 57, 57);
     hover-replace-delete-text: rgb(0, 0, 0);
-    hover-replace-insert-background: rgb(54, 124, 54);
+    hover-replace-insert-background: rgb(82, 188, 82);
     hover-replace-insert-text: rgb(0, 0, 0);
 }

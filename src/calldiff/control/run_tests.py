@@ -138,3 +138,4 @@ class RunTestsThread(Thread):
         failure = self.test_files[list(self.test_files)[0]].test_classes[0].tests[1].run_failure  # TODO
         application.get_app().live_data.compare_exception = HashableComparison.from_exception(failure)  # TODO
         safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)
+        safe_publish(CONSTANTS.PUBSUB.SHOW_ERROR)
