@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
 from calldiff import application
-from calldiff.constants import CONSTANTS, LineType
+from calldiff.constants import CONSTANTS, LineType, VisualState
 
 
 @dataclass
@@ -35,6 +35,7 @@ class DiffPanel(wx.ScrolledCanvas):
     panel_width: int
     mouse_over_change: Optional[int] = None
     click_change: Optional[int] = None
+    copied_change: Optional[int] = None
     backgrounds: Dict[LineType, wx.Colour]
     foregrounds: Dict[LineType, wx.Colour]
     select_bgs: Dict[LineType, wx.Colour]
@@ -143,14 +144,20 @@ class DiffPanel(wx.ScrolledCanvas):
                         latest_change.lines = range(latest_change.lines[0], index + 1)
                         latest_change.text += line.to_copy()
 
-    def index_in(self, index: int) -> bool:
-        if self.click_change is None:
-            if self.mouse_over_change is None:
-                return False
+    def index_in(self, index: int) -> VisualState:
+        if self.copied_change is None:
+            if self.click_change is None:
+                if self.mouse_over_change is None:
+                    return VisualState.NORMAL
+                else:
+                    selected = (index in self.changes[self.mouse_over_change].lines)
+                    return VisualState.HIGHLIGHTED if selected else VisualState.NORMAL
             else:
-                return index in self.changes[self.mouse_over_change].lines
+                selected = (index in self.changes[self.click_change].lines)
+                return VisualState.HIGHLIGHTED if selected else VisualState.NORMAL
         else:
-            return index in self.changes[self.click_change].lines
+            selected = (index in self.changes[self.copied_change].lines)
+            return VisualState.COPIED if selected else VisualState.NORMAL
 
     def on_paint(self, _event: wx.PaintEvent) -> None:
         """Handle paint event"""
@@ -179,15 +186,22 @@ class DiffPanel(wx.ScrolledCanvas):
 
             # Loop over lines
             for index, line in enumerate(contents.comparison_lines):
-                if self.index_in(index):
-                    background = self.select_bgs[line.line_type]
-                    foreground = self.select_fgs[line.line_type]
-                else:
+                state = self.index_in(index)
+                y = self.line_height * index
+                if state == VisualState.NORMAL:
                     background = self.backgrounds[line.line_type]
                     foreground = self.foregrounds[line.line_type]
+                elif state == VisualState.HIGHLIGHTED:
+                    background = self.select_bgs[line.line_type]
+                    foreground = self.select_fgs[line.line_type]
+                elif index == self.changes[self.copied_change].lines[0]:
+                    dc.SetTextForeground(wx.WHITE)
+                    dc.DrawText(_("COPIED"), self.diff_text_offset[0] + self.panel_offset, self.diff_text_offset[1] + y)
+                    continue
+                else:
+                    continue
                 dc.SetPen(wx.Pen(background))
                 dc.SetBrush(wx.Brush(background))
-                y = self.line_height * index
                 rect = wx.Rect(self.panel_offset, y, self.panel_width, self.line_height)
                 dc.DrawRectangle(rect)
                 if line.expect:
@@ -219,12 +233,12 @@ class DiffPanel(wx.ScrolledCanvas):
         y = line_height * index
         text_indent = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[0]
         for chunk in line.line_analysis.chunks:
-            if self.index_in(index):
-                background = self.sel_repl_bgs[chunk.chunk_type]
-                foreground = self.sel_repl_fgs[chunk.chunk_type]
-            else:
+            if self.index_in(index) == VisualState.NORMAL:
                 background = self.replace_bgs[chunk.chunk_type]
                 foreground = self.replace_fgs[chunk.chunk_type]
+            else:
+                background = self.sel_repl_bgs[chunk.chunk_type]
+                foreground = self.sel_repl_fgs[chunk.chunk_type]
             dc.SetPen(wx.Pen(background))
             dc.SetBrush(wx.Brush(background))
             text_width, text_height = dc.GetTextExtent(chunk.text)
@@ -263,6 +277,12 @@ class DiffPanel(wx.ScrolledCanvas):
                 wx.TheClipboard.Flush()
             finally:
                 wx.TheClipboard.Close()
+            self.copied_change = click_change
+            wx.CallLater(2000, self.copy_done)
         if self.click_change is not None:
             self.RefreshRect(self.changes[self.click_change].rect)
         self.click_change = None
+
+    def copy_done(self):
+        self.RefreshRect(self.changes[self.copied_change].rect)
+        self.copied_change = None
