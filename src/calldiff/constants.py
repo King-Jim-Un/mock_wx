@@ -14,6 +14,7 @@ _ = wx.GetTranslation
 
 # Enums:
 class LineType(Enum):
+    """Comparison types"""
     EQUAL = auto()
     INSERT = auto()
     DELETE = auto()
@@ -21,6 +22,7 @@ class LineType(Enum):
 
 
 class VisualState(Enum):
+    """Visual states"""
     NORMAL = auto()
     HIGHLIGHTED = auto()
     COPIED = auto()
@@ -43,6 +45,9 @@ class CONSTANTS:
             LINE_NUM_OFFSET = (5, 2)
             DIVIDER_WIDTH = 2
             DIFF_TEXT_OFFSET = (5, 2)
+            COPY_OFFSET = 50
+            REFRESH_INFLATE = 5
+            COPY_DELAY_MILLIS = 2000
 
     class PUBSUB:
         NEW_NODE = "NEW_NODE"

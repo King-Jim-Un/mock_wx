@@ -14,6 +14,7 @@ _ = wx.GetTranslation
 
 @dataclass
 class TestsRoot:
+    """The root node in the testing tree"""
     node_id: wx.TreeItemId = field(default_factory=wx.TreeItemId)
 
 

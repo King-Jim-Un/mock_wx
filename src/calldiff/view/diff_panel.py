@@ -22,6 +22,7 @@ class Change:
 
 
 class DiffPanel(wx.ScrolledCanvas):
+    """A panel that displays the difference between two lists of calls"""
     font: wx.Font
     changes: List[Change]
     size: wx.Size
@@ -110,9 +111,11 @@ class DiffPanel(wx.ScrolledCanvas):
         self.diff_text_offset = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET
 
     def on_show_error(self):
+        """Handle a new error display event"""
         self.on_size()
 
     def on_size(self, event: Optional[wx.SizeEvent] = None) -> None:
+        """Handle a window size event"""
         if event:
             event.Skip()
         self.changes = []
@@ -144,19 +147,20 @@ class DiffPanel(wx.ScrolledCanvas):
                         latest_change.lines = range(latest_change.lines[0], index + 1)
                         latest_change.text += line.to_copy()
 
-    def index_in(self, index: int) -> VisualState:
+    def get_visual_state(self, index: int) -> VisualState:
+        """How should this line index be displayed?"""
         if self.copied_change is None:
             if self.click_change is None:
                 if self.mouse_over_change is None:
                     return VisualState.NORMAL
                 else:
-                    selected = (index in self.changes[self.mouse_over_change].lines)
+                    selected = index in self.changes[self.mouse_over_change].lines
                     return VisualState.HIGHLIGHTED if selected else VisualState.NORMAL
             else:
-                selected = (index in self.changes[self.click_change].lines)
+                selected = index in self.changes[self.click_change].lines
                 return VisualState.HIGHLIGHTED if selected else VisualState.NORMAL
         else:
-            selected = (index in self.changes[self.copied_change].lines)
+            selected = index in self.changes[self.copied_change].lines
             return VisualState.COPIED if selected else VisualState.NORMAL
 
     def on_paint(self, _event: wx.PaintEvent) -> None:
@@ -186,7 +190,7 @@ class DiffPanel(wx.ScrolledCanvas):
 
             # Loop over lines
             for index, line in enumerate(contents.comparison_lines):
-                state = self.index_in(index)
+                state = self.get_visual_state(index)
                 y = self.line_height * index
                 if state == VisualState.NORMAL:
                     background = self.backgrounds[line.line_type]
@@ -219,7 +223,9 @@ class DiffPanel(wx.ScrolledCanvas):
             if (self.mouse_over_change is not None) and (self.click_change in [None, self.mouse_over_change]):
                 art = wx.ArtProvider.GetBitmap(wx.ART_COPY)
                 rect = self.changes[self.mouse_over_change].rect
-                point = wx.Point(rect.right - 50, rect.top + ((rect.height - art.Size.height) // 2))
+                point = wx.Point(
+                    rect.right - CONSTANTS.WINDOWS.DIFF.COPY_OFFSET, rect.top + ((rect.height - art.Size.height) // 2)
+                )
                 dc.DrawBitmap(art, point, True)
         finally:
             dc.Destroy()
@@ -233,7 +239,7 @@ class DiffPanel(wx.ScrolledCanvas):
         y = line_height * index
         text_indent = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[0]
         for chunk in line.line_analysis.chunks:
-            if self.index_in(index) == VisualState.NORMAL:
+            if self.get_visual_state(index) == VisualState.NORMAL:
                 background = self.replace_bgs[chunk.chunk_type]
                 foreground = self.replace_fgs[chunk.chunk_type]
             else:
@@ -249,25 +255,30 @@ class DiffPanel(wx.ScrolledCanvas):
             text_indent = 0
 
     def find_change(self, point: wx.Point) -> Optional[int]:
+        """Find any change this point is inside"""
         for index, change in enumerate(self.changes):
             if change.rect.Contains(point):
                 return index
         return None
 
     def on_move(self, event: wx.MouseEvent) -> None:
+        """Hand a mouse movement"""
         event.Skip()
         mouse_over_change = self.find_change(event.GetPosition())
         if mouse_over_change != self.mouse_over_change:
             rect = self.changes[self.mouse_over_change if mouse_over_change is None else mouse_over_change].rect
-            rect = wx.Rect(rect.x-5,rect.y-5,rect.width+5,rect.height+5)
+            inflate = CONSTANTS.WINDOWS.DIFF.REFRESH_INFLATE
+            rect = wx.Rect(rect.x, rect.y - inflate, rect.width, rect.height + (inflate * 2))
             self.RefreshRect(rect)
             self.mouse_over_change = mouse_over_change
 
     def on_down(self, event: wx.MouseEvent) -> None:
+        """Handle a left button down"""
         event.Skip()
         self.click_change = self.find_change(event.GetPosition())
 
     def on_up(self, event: wx.MouseEvent) -> None:
+        """Handle a left button up"""
         event.Skip()
         click_change = self.find_change(event.GetPosition())
         if (click_change == self.click_change) and (click_change is not None):
@@ -278,11 +289,12 @@ class DiffPanel(wx.ScrolledCanvas):
             finally:
                 wx.TheClipboard.Close()
             self.copied_change = click_change
-            wx.CallLater(2000, self.copy_done)
+            wx.CallLater(CONSTANTS.WINDOWS.DIFF.COPY_DELAY_MILLIS, self.copy_done)
         if self.click_change is not None:
             self.RefreshRect(self.changes[self.click_change].rect)
         self.click_change = None
 
     def copy_done(self):
+        """Disable the COPIED message and return to normal operation"""
         self.RefreshRect(self.changes[self.copied_change].rect)
         self.copied_change = None

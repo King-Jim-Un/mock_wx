@@ -46,8 +46,10 @@ class MainFrame(wx.Frame):
         settings.sash_position = self.splitter.GetSashPosition()
 
     def new_node(self, obj, parent) -> None:
+        """Add a new node to the tree"""
         obj.node_id = self.tree.AppendItem(parent.node_id, str(obj), data=obj)
         self.tree.Expand(parent.node_id)
 
     def update_node(self, obj) -> None:
+        """Update a node in the tree"""
         self.tree.SetItemText(obj.node_id, str(obj))

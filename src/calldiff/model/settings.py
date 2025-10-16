@@ -38,10 +38,14 @@ class Settings:
             LOG.warning("Incompatible settings")
             return cls()
 
-        while settings.data_version < cls.APP_VERSION:
-            upgrade = f"upgrade_{settings.data_version}_to_{settings.data_version + 1}"
-            LOG.debug("Upgrading settings: %s", upgrade)
-            settings = getattr(settings, upgrade)()
+        try:
+            while settings.data_version < cls.APP_VERSION:
+                upgrade = f"upgrade_{settings.data_version}_to_{settings.data_version + 1}"
+                LOG.debug("Upgrading settings: %s", upgrade)
+                settings = getattr(settings, upgrade)()
+        except Exception as error:
+            LOG.warning("Unable to update settings: %s", error)
+            return cls()
 
         if sorted(list(cls().__dict__)) != sorted(list(settings.__dict__)):
             LOG.warning("Keys changed")

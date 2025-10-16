@@ -17,38 +17,36 @@ _ = wx.GetTranslation
 
 @dataclass
 class TextChunk:
+    """Chunk of comparison text from within a single line"""
     chunk_type: LineType
     text: str
 
 
 @dataclass
 class LineChunks:
+    """All the chunks of text from within a single line"""
     chunks: List[TextChunk] = field(default_factory=list)
 
 
 @dataclass(repr=False, eq=False)
 class HashableCall:
+    """A call in the call list, but hashable"""
     line_number: int = 0
     name: str = ""
     args: Tuple[str, ...] = ()
     kwargs: Tuple[Tuple[str, str], ...] = field(default_factory=list)
     sorted_kwargs: tuple = field(init=False)
 
-    @staticmethod
-    def hashable(obj):
-        try:
-            hash(obj)
-            return obj
-        except TypeError:
-            return str(obj)
-
     def __post_init__(self) -> None:
+        """Complete construction"""
         self.sorted_kwargs = tuple(sorted(self.kwargs, key=lambda obj: obj[0]))
 
     def __hash__(self) -> int:
+        """Get the hash of the call"""
         return hash((self.name, self.args, self.sorted_kwargs))
 
     def __eq__(self, other: Any) -> bool:
+        """Compare two hashable objects"""
         return (
             isinstance(other, HashableCall)
             and self.name == other.name
@@ -57,10 +55,12 @@ class HashableCall:
         )
 
     def __repr__(self) -> str:
+        """Return a string representation of the call"""
         args = list(self.args) + [f"{key}={value}" for key, value in self.kwargs]
         return f"call.{self.name}({', '.join(args)})"
 
     def to_list(self) -> List[str]:
+        """Convert the text in a call to a list of strings"""
         return_value = ["call.", self.name, "("]
         subsequent = False
         for arg in self.args:
@@ -76,6 +76,7 @@ class HashableCall:
         return return_value + [")"]
 
     def compare(self, other: "HashableCall") -> "ComparisonLine":
+        """Compare two hashable objects"""
         s_list = self.to_list()
         o_list = other.to_list()
         sequence = SequenceMatcher(a=s_list, b=o_list)
@@ -102,18 +103,21 @@ class HashableCall:
 
 @dataclass
 class ComparisonLine:
+    """A comparison of two hashable calls"""
     line_type: LineType
     expect: Optional[HashableCall] = None
     actual: Optional[HashableCall] = None
     line_analysis: LineChunks = field(default_factory=LineChunks)
 
     def __str__(self):
+        """Return a string representation of the comparison"""
         if self.line_type == LineType.REPLACE:
             return str(self.line_analysis)
         else:
             return str(self.expect) if self.expect else str(self.actual)
 
     def to_copy(self) -> str:
+        """Actual call as text for clipboard copy purposes"""
         return f"{str(self.actual)}\n" if self.actual else ""
 
 
@@ -122,12 +126,14 @@ CallList = NewType("CallList", List[HashableCall])
 
 @dataclass
 class HashableComparison:
+    """A comparison of two lists of hashable calls"""
     expect: List[HashableCall] = field(default_factory=list)
     actual: List[HashableCall] = field(default_factory=list)
     comparison_lines: List[ComparisonLine] = field(default_factory=list)
 
     @classmethod
     def from_exception(cls, error: CallDifference) -> "HashableComparison":
+        """Create a comparison from an exception"""
         return_value = cls()
         for index, (name, args, kwargs) in enumerate(error.expect):
             return_value.expect.append(HashableCall(index + 1, name, tuple(args), tuple(kwargs)))
@@ -180,7 +186,9 @@ class HashableComparison:
                 assert False
 
     def __len__(self):
+        """Return the number of lines needed to represent the comparison"""
         return len(self.comparison_lines)
 
     def last_line_num(self) -> int:
+        """Return the last line number to be displayed in the comparison"""
         return len(self.expect)

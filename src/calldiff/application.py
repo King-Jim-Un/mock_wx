@@ -1,4 +1,4 @@
-"""Executable portion of application object"""
+"""Application object"""
 
 import logging
 import wx
@@ -14,6 +14,7 @@ _ = wx.GetTranslation
 
 
 class CallDiffApp(wx.App):
+    """Application object"""
     settings: Preferences
     live_data: LiveData
     frame: MainFrame
