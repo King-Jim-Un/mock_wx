@@ -3,6 +3,7 @@
 import logging
 from pubsub import pub
 import wx
+from wx import richtext
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -20,8 +21,10 @@ from calldiff.view.statusbar import StatusBar
 
 class MainFrame(wx.Frame):
     """Main application frame"""
+
     menubar: MenuBar
     statusbar: StatusBar
+
     def __init__(self, *args, **kwargs) -> None:
         """Constructor"""
         super().__init__(*args, **kwargs)
@@ -44,7 +47,7 @@ class MainFrame(wx.Frame):
         # │ │             │ │ │ │                                            │ │ │ │
         # │ │             │ │ │ └────────────────────────────────────────────┘ │ │ │
         # │ │             │ │ │                                                │ │ │
-        # │ │             │ │ │ ┌─ TBD ──────────────────────────────────────┐ │ │ │
+        # │ │             │ │ │ ┌─ rich_text ────────────────────────────────┐ │ │ │
         # │ │             │ │ │ │                                            │ │ │ │
         # │ │             │ │ │ │                                            │ │ │ │
         # │ │             │ │ │ │                                            │ │ │ │
@@ -73,6 +76,12 @@ class MainFrame(wx.Frame):
         self.diff_panel = DiffPanel(self.content, name="diff_panel")
         self.diff_panel.Hide()
         sizer.Add(self.diff_panel, 1, wx.EXPAND)
+
+        self.rich_text = richtext.RichTextCtrl(
+            self.content, style=richtext.RE_MULTILINE | richtext.RE_READONLY, name="rich_text"
+        )
+        self.rich_text.Hide()
+        sizer.Add(self.rich_text, 1, wx.EXPAND)
 
         self.splitter.SplitVertically(self.tree, self.content, app.settings.sash_position)
 

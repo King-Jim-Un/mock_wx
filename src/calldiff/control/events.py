@@ -6,6 +6,7 @@ from typing import Any, Optional
 import wx
 
 from calldiff import application
+from calldiff.constants import StatusFlags
 from calldiff.control.run_tests import TestFunction
 from calldiff.model.live_data import LiveData
 from calldiff.view.main_frame import MainFrame
@@ -30,22 +31,44 @@ class EventHandlers:
 
     def display_success(self, test: TestFunction) -> None:
         """Display success panel"""
-        ...
+        self.live_data.status.add(StatusFlags.DISPLAY_SUCCESS)
+        self.live_data.status.discard(StatusFlags.DISPLAY_NONE)
+        self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
+        self.live_data.status.discard(StatusFlags.DISPLAY_EXCEPTION)
+        self.frame.diff_panel.Hide()
+        self.frame.rich_text.Show()
+        self.frame.content.Layout()
 
     def display_call_diff(self, test: TestFunction) -> None:
         """Display call difference panel"""
+        self.live_data.status.add(StatusFlags.DISPLAY_DIFF)
+        self.live_data.status.discard(StatusFlags.DISPLAY_NONE)
+        self.live_data.status.discard(StatusFlags.DISPLAY_EXCEPTION)
+        self.live_data.status.discard(StatusFlags.DISPLAY_SUCCESS)
         self.live_data.display_test = test
         self.frame.diff_panel.show_error()
         self.frame.diff_panel.Show()
+        self.frame.rich_text.Hide()
         self.frame.content.Layout()
 
     def display_other_error(self, test: TestFunction) -> None:
         """Display other exception panel"""
-        ...
+        self.live_data.status.add(StatusFlags.DISPLAY_EXCEPTION)
+        self.live_data.status.discard(StatusFlags.DISPLAY_SUCCESS)
+        self.live_data.status.discard(StatusFlags.DISPLAY_NONE)
+        self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
+        self.frame.diff_panel.Hide()
+        self.frame.rich_text.Show()
+        self.frame.content.Layout()
 
     def display_none(self, data) -> None:
         """Hide all panels"""
+        self.live_data.status.add(StatusFlags.DISPLAY_NONE)
+        self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
+        self.live_data.status.discard(StatusFlags.DISPLAY_EXCEPTION)
+        self.live_data.status.discard(StatusFlags.DISPLAY_SUCCESS)
         self.frame.diff_panel.Hide()
+        self.frame.rich_text.Hide()
 
     def preferences(self, _event: Optional[wx.Event]=None)->None:
         """Configure application preferences"""

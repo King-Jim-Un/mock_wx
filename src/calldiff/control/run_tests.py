@@ -13,7 +13,7 @@ import wx
 from mock_wx.test_runner import Actions, FileDetails, TestCaseDetails, TestDetails, TestResults
 
 from calldiff import application
-from calldiff.constants import CONSTANTS
+from calldiff.constants import CONSTANTS, StatusFlags
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -80,6 +80,14 @@ class RunTestsThread(Thread):
         )
         self.objects_by_id = {}
         application.get_app().live_data.test_files = {}
+
+    def start(self) -> None:
+        """Start the thread"""
+        status = application.get_app().live_data.status
+        status.discard(StatusFlags.CLOSED)
+        status.add(StatusFlags.OPEN)
+        status.add(StatusFlags.RUNNING)
+        super().start()
 
     def recast_obj(self, obj: Any) -> Any:
         """Given an object from the subprocess, recast it into how we want to keep it in our application"""
@@ -166,4 +174,5 @@ class RunTestsThread(Thread):
                 # Return code prior to exit
                 LOG.debug("return-code: %r", payload)
 
+        application.get_app().live_data.status.discard(StatusFlags.RUNNING)
         safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)

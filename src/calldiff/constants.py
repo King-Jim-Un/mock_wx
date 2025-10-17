@@ -13,6 +13,17 @@ _ = wx.GetTranslation
 
 
 # Enums:
+class StatusFlags(Enum):
+    """Application state"""
+    OPEN = auto()
+    CLOSED = auto()
+    RUNNING = auto()
+    DISPLAY_NONE = auto()
+    DISPLAY_DIFF = auto()
+    DISPLAY_EXCEPTION = auto()
+    DISPLAY_SUCCESS = auto()
+
+
 class LineType(Enum):
     """Comparison types"""
     EQUAL = auto()
