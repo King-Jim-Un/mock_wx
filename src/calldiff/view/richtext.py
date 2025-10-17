@@ -25,3 +25,7 @@ class RichText(richtext.RichTextCtrl):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.chunks = []
+
+    def add_chunk(self, text_type: TextType, text: str):
+        self.chunks.append(TextChunk(text_type, text))
+        self.AppendText(text)

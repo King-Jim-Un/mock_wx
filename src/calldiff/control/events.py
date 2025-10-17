@@ -8,7 +8,7 @@ from typing import Any, Optional
 import wx
 
 from calldiff import application
-from calldiff.constants import StatusFlags, CONSTANTS
+from calldiff.constants import StatusFlags, CONSTANTS, TextType
 from calldiff.control.run_tests import TestFunction
 from calldiff.model.live_data import LiveData
 from calldiff.view.main_frame import MainFrame
@@ -42,7 +42,16 @@ class EventHandlers:
         self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
         self.live_data.status.discard(StatusFlags.DISPLAY_EXCEPTION)
         self.frame.diff_panel.Hide()
-        self.frame.rich_text.Show()
+        self.live_data.display_test = test
+        text_ctrl = self.frame.rich_text
+        text_ctrl.Clear()
+        text = _("Test file: %s\nTest suite: %s\nUnit test: %s\n") % (
+            test.test_class.test_file.path,
+            test.test_class,
+            test,
+        )
+        text_ctrl.add_chunk(TextType.EXPOSITION, text)
+        text_ctrl.Show()
         self.frame.content.Layout()
 
     def display_call_diff(self, test: TestFunction) -> None:
