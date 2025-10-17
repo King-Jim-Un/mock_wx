@@ -14,25 +14,70 @@ from calldiff import application
 from calldiff.constants import CONSTANTS
 from calldiff.control.run_tests import TestFunction
 from calldiff.view.diff_panel import DiffPanel
+from calldiff.view.menubar import MenuBar
+from calldiff.view.statusbar import StatusBar
 
 
 class MainFrame(wx.Frame):
     """Main application frame"""
+    menubar: MenuBar
+    statusbar: StatusBar
     def __init__(self, *args, **kwargs) -> None:
         """Constructor"""
         super().__init__(*args, **kwargs)
         app = application.get_app()
 
+        # ┌─ menubar ──────────────────────────────────────────────────────────────┐
+        # └────────────────────────────────────────────────────────────────────────┘
+        #
+        # ┌─ splitter ─────────────────────────────────────────────────────────────┐
+        # │                                                                        │
+        # │ ┌─ tree ──────┐ ┌─ content ──────────────────────────────────────────┐ │
+        # │ │             │ │                                                    │ │
+        # │ │             │ │ ┌─ sizer ────────────────────────────────────────┐ │ │
+        # │ │             │ │ │                                                │ │ │
+        # │ │             │ │ │ ┌─ diff_panel ───────────────────────────────┐ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ └────────────────────────────────────────────┘ │ │ │
+        # │ │             │ │ │                                                │ │ │
+        # │ │             │ │ │ ┌─ TBD ──────────────────────────────────────┐ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ │                                            │ │ │ │
+        # │ │             │ │ │ └────────────────────────────────────────────┘ │ │ │
+        # │ │             │ │ └────────────────────────────────────────────────┘ │ │
+        # │ └─────────────┘ └────────────────────────────────────────────────────┘ │
+        # └────────────────────────────────────────────────────────────────────────┘
+        #
+        # ┌─ statusbar ────────────────────────────────────────────────────────────┐
+        # └────────────────────────────────────────────────────────────────────────┘
+        self.menubar = MenuBar()
+        self.SetMenuBar(self.menubar)
+
         self.splitter = wx.SplitterWindow(self, style=wx.SP_3D | wx.SP_LIVE_UPDATE, name="splitter")
+
         self.tree = wx.TreeCtrl(self.splitter, name="tree")
         app.live_data.tree_root.node_id = self.tree.AddRoot(_("Tests"), data=app.live_data.tree_root)
+
         self.content = wx.Panel(self.splitter, name="content")
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.content.SetSizer(sizer)
+
         self.diff_panel = DiffPanel(self.content, name="diff_panel")
         self.diff_panel.Hide()
         sizer.Add(self.diff_panel, 1, wx.EXPAND)
+
         self.splitter.SplitVertically(self.tree, self.content, app.settings.sash_position)
+
+        self.statusbar = StatusBar(self, name="statusbar")
+        self.SetStatusBar(self.statusbar)
 
     def complete_init(self) -> None:
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree)

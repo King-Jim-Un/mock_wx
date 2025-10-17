@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 import logging
-from typing import Any
+from typing import Any, Optional
 import wx
 
 from calldiff import application
@@ -41,3 +41,15 @@ class EventHandlers:
 
     def display_none(self, data) -> None:
         self.frame.diff_panel.Hide()
+
+    def preferences(self, _event: Optional[wx.Event]=None)->None:
+        """Configure application preferences"""
+        LOG.info("Preferences")
+
+    def quit(self, _event: Optional[wx.Event]=None)-> None:
+        """Close the application"""
+        application.get_app().frame.Close()
+
+    def about(self, _event: Optional[wx.Event]=None)->None:
+        """About the application"""
+        LOG.info("About")
