@@ -80,15 +80,11 @@ class MainFrame(wx.Frame):
         self.SetStatusBar(self.statusbar)
 
     def complete_init(self) -> None:
+        """Binding event handlers"""
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         pub.subscribe(self.new_node, CONSTANTS.PUBSUB.NEW_NODE)
         pub.subscribe(self.update_node, CONSTANTS.PUBSUB.UPDATE_NODE)
-    #     pub.subscribe(self.set_data, CONSTANTS.PUBSUB.TEST_COMPLETE)
-    #
-    # def set_data(self):  # TODO REMOVE THIS
-    #     application.get_app().live_data.compare_exception.compare()
-    #     self.diff_panel.Refresh()
 
     def on_close(self, event: wx.CloseEvent) -> None:
         """Save the frame size before closing"""
@@ -117,6 +113,7 @@ class MainFrame(wx.Frame):
         self.on_select(self.tree.GetItemData(event.GetItem()))
 
     def on_select(self, data):
+        """Handle a tree node selection event"""
         events = application.get_app().events
         if isinstance(data, TestFunction):
             if data.completed:

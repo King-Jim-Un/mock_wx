@@ -14,6 +14,7 @@ from calldiff import application
 class Menu(wx.Menu):
     """Custom menu that handles binding events to items"""
     def add(self, name: str, handler: Callable, help_str: str="", item_id: int=wx.ID_ANY) -> wx.MenuItem:
+        """Add a menu item and bind a handler to it"""
         item = self.Append(item_id, name, help_str)
         self.Bind(wx.EVT_MENU, handler, id=item.GetId())
         return item
@@ -22,6 +23,7 @@ class Menu(wx.Menu):
 class MenuBar(wx.MenuBar):
     """Menubar displayed at top of main frame"""
     def __init__(self, *args, **kwargs) -> None:
+        """Constructor"""
         super().__init__(*args, **kwargs)
 
         events = application.get_app().events

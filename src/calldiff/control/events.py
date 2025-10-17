@@ -23,23 +23,28 @@ class EventHandlers:
     live_data: LiveData = field(init=False)
 
     def complete_init(self) -> None:
+        """Constructor finalization"""
         app = application.get_app()
         self.frame = app.frame
         self.live_data = app.live_data
 
     def display_success(self, test: TestFunction) -> None:
+        """Display success panel"""
         ...
 
     def display_call_diff(self, test: TestFunction) -> None:
+        """Display call difference panel"""
         self.live_data.display_test = test
         self.frame.diff_panel.show_error()
         self.frame.diff_panel.Show()
         self.frame.content.Layout()
 
     def display_other_error(self, test: TestFunction) -> None:
+        """Display other exception panel"""
         ...
 
     def display_none(self, data) -> None:
+        """Hide all panels"""
         self.frame.diff_panel.Hide()
 
     def preferences(self, _event: Optional[wx.Event]=None)->None:
