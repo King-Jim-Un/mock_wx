@@ -2,11 +2,13 @@
 
 from dataclasses import dataclass, field
 import logging
+from pubsub import pub
 from typing import Any, Optional
+
 import wx
 
 from calldiff import application
-from calldiff.constants import StatusFlags
+from calldiff.constants import StatusFlags, CONSTANTS
 from calldiff.control.run_tests import TestFunction
 from calldiff.model.live_data import LiveData
 from calldiff.view.main_frame import MainFrame
@@ -28,6 +30,10 @@ class EventHandlers:
         app = application.get_app()
         self.frame = app.frame
         self.live_data = app.live_data
+        pub.subscribe(self.test_complete, CONSTANTS.PUBSUB.TEST_COMPLETE)
+
+    def test_complete(self) -> None:
+        print(application.get_app().live_data)
 
     def display_success(self, test: TestFunction) -> None:
         """Display success panel"""

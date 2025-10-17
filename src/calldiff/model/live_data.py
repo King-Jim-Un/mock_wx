@@ -1,6 +1,7 @@
 """Application data not saved/restored between runs"""
 
 from dataclasses import dataclass, field
+from datetime import timedelta
 import logging
 from pathlib import Path
 from typing import Optional, Dict, Set
@@ -27,3 +28,10 @@ class LiveData:
     tree_root: TestsRoot = field(default_factory=TestsRoot)
     test_files: Dict[Path, TestFile] = field(default_factory=dict)
     display_test: Optional[TestFunction] = None
+    tests_run: int = 0
+    tests_passed: int = 0
+    tests_failed: int = 0
+    tests_skipped: int = 0
+    faults_encountered: int = 0
+    run_time: timedelta = timedelta(seconds=0)
+

@@ -4,16 +4,14 @@ import os
 from pathlib import Path
 import sys
 
-from mock_wx.test_runner import Tester, Actions
+from mock_wx.test_runner import Tester
 
 def main(cmdline: Namespace) -> int:
     os.environ["CALL_DIFF_RUNNER"] = ""
     sys.path.append(str(cmdline.base_dir))
     tester = Tester(cmdline)
     logging.basicConfig(level=getattr(logging, args.log_level), stream=tester.log)
-    return_code = tester.run()
-    tester.write((Actions.EXIT, return_code))
-    return return_code
+    return tester.run()
 
 
 if __name__ == "__main__":

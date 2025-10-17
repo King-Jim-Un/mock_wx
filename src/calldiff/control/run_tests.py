@@ -1,5 +1,6 @@
 from base64 import b64decode
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 import logging
 from pathlib import Path
 import pickle
@@ -8,9 +9,10 @@ from threading import Thread
 from subprocess import Popen, PIPE
 import sys
 from typing import Any, Dict, Optional, List, Tuple
+from unittest import SkipTest
 import wx
 
-from mock_wx.test_runner import Actions, FileDetails, TestCaseDetails, TestDetails, TestResults
+from mock_wx.test_runner import Actions, FileDetails, TestCaseDetails, TestDetails, TestResults, TestsDone, TestStart
 
 from calldiff import application
 from calldiff.constants import CONSTANTS, StatusFlags
@@ -31,6 +33,7 @@ class TestFunction:
     test_class: "TestClass"
     func_name: str
     doc_string: Optional[str] = None
+    run_time: timedelta = timedelta(seconds=0)
     run_failure: Optional[Exception] = None
     completed: bool = False
     stream: List[Tuple[Actions, str]] = field(default_factory=list)
@@ -71,6 +74,7 @@ class RunTestsThread(Thread):
     """A thread that runs tests"""
     objects_by_id: Dict[int, Any]
     running_test: Optional[TestFunction] = None
+    test_start_time: datetime
 
     def __init__(self, base_dir: Path):
         """Constructor"""
@@ -109,6 +113,8 @@ class RunTestsThread(Thread):
             test_file = self.objects_by_id[obj.path_id]  # type: ignore
             test_file.import_failure = obj.import_failure
             test_file.doc_string = obj.doc_string
+            if obj.import_failure is not None:
+                application.get_app().live_data.faults_encountered += 1
             safe_publish(CONSTANTS.PUBSUB.UPDATE_NODE, obj=test_file)
             return test_file
 
@@ -117,6 +123,8 @@ class RunTestsThread(Thread):
             test_file = self.objects_by_id[obj.path_id]  # type: ignore
             test_class = TestClass(test_file, obj.class_name, obj.inst_failure, obj.doc_string)
             test_file.test_classes.append(test_class)
+            if obj.inst_failure is not None:
+                application.get_app().live_data.faults_encountered += 1
             safe_publish(CONSTANTS.PUBSUB.NEW_NODE, obj=test_class, parent=test_file)
             return test_class
 
@@ -133,6 +141,15 @@ class RunTestsThread(Thread):
             test_function = self.objects_by_id[obj.test_id]  # type: ignore
             test_function.run_failure = obj.run_failure
             test_function.completed = True
+            test_function.run_time = obj.timestamp - self.test_start_time
+            live_data = application.get_app().live_data
+            live_data.tests_run += 1
+            if obj.run_failure is None:
+                live_data.tests_passed += 1
+            elif isinstance(obj.run_failure, SkipTest):
+                live_data.tests_skipped += 1
+            else:
+                live_data.tests_failed += 1
             safe_publish(CONSTANTS.PUBSUB.UPDATE_NODE, obj=test_function)
             self.running_test = None
             return test_function
@@ -142,6 +159,9 @@ class RunTestsThread(Thread):
 
     def run(self) -> None:
         # THIS CODE RUNS IN A THREAD! DO NOT CALL OUT WITHOUT wx.CallAfter!
+
+        live_data = application.get_app().live_data
+        start_time: Optional[datetime] = None
 
         # Read lines from the process until the process closes the connection
         while True:
@@ -154,7 +174,11 @@ class RunTestsThread(Thread):
             action, payload = pickle.loads(b64decode(text))
 
             # Interpret the line
-            if action == Actions.ASSIGN_ID:
+            if action == Actions.START:
+                assert isinstance(payload, datetime)
+                start_time = payload
+
+            elif action == Actions.ASSIGN_ID:
                 # Returning some data that should be stored
                 id_num, obj = payload
                 self.objects_by_id[id_num] = self.recast_obj(obj)
@@ -168,11 +192,15 @@ class RunTestsThread(Thread):
 
             elif action == Actions.RUN_TEST:
                 # A test has started running
-                self.running_test = self.objects_by_id[payload]
+                assert isinstance(payload, TestStart)
+                self.running_test = self.objects_by_id[payload.test_id]
+                self.test_start_time = payload.timestamp
 
             elif action == Actions.EXIT:
                 # Return code prior to exit
+                assert isinstance(payload, TestsDone)
+                live_data.run_time = payload.timestamp - start_time
                 LOG.debug("return-code: %r", payload)
 
-        application.get_app().live_data.status.discard(StatusFlags.RUNNING)
+        live_data.status.discard(StatusFlags.RUNNING)
         safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)

@@ -1,6 +1,7 @@
 from argparse import Namespace
 from base64 import b64encode
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum, auto
 from importlib import import_module
 from pathlib import Path
@@ -12,6 +13,7 @@ from mock_wx._test_case import wxTestCase
 
 
 class Actions(Enum):
+    START = auto()
     ASSIGN_ID = auto()  # Payload is List[Tuple[IdNum, Any]]
     STDOUT = auto()
     STDERR = auto()
@@ -25,9 +27,22 @@ IdNum = NewType("IdNum", int)
 
 
 @dataclass
+class TestStart:
+    test_id: IdNum
+    timestamp: datetime = field(default_factory=lambda: datetime.now())
+
+
+@dataclass
+class TestsDone:
+    return_code: int
+    timestamp: datetime = field(default_factory=lambda: datetime.now())
+
+
+@dataclass
 class TestResults:
     test_id: IdNum
     run_failure: Optional[Exception] = None
+    timestamp: datetime = field(default_factory=lambda: datetime.now())
 
 
 @dataclass
@@ -82,7 +97,6 @@ class Tester:
 
     def write(self, obj: Tuple[Actions, Any]) -> None:
         text = b64encode(pickle.dumps(obj))
-        # self.stdout.write(f"{obj}\n")
         self.stdout.write(text.decode("ascii") + "\n")
 
     def assign_id(self, obj: Any) -> IdNum:
@@ -115,7 +129,7 @@ class Tester:
                     test_id = self.assign_id(test_details)
                     tests.append((name, func, test_id))
         for name, func, test_id in tests:
-            self.write((Actions.RUN_TEST, test_id))
+            self.write((Actions.RUN_TEST, TestStart(test_id)))
             try:
                 if hasattr(test_case, "setUp"):
                     test_case.setUp()
@@ -153,7 +167,12 @@ class Tester:
 
     def run(self) -> int:
         self.patch_std()
+        self.write((Actions.START, datetime.now()))
+
         paths = self.scan_files()
         for path in sorted(paths):
             self.load_module(path, paths[path])
-        return 0
+
+        return_code = 0
+        self.write((Actions.EXIT, TestsDone(return_code)))
+        return return_code
