@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 import logging
-from pubsub import pub
 from typing import List, Optional, Tuple, Dict
 import wx
 
@@ -10,8 +9,11 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
+from mock_wx._test_case import CallDifference
+
 from calldiff import application
 from calldiff.constants import CONSTANTS, LineType, VisualState
+from calldiff.model.comparison import HashableComparison
 
 
 @dataclass
@@ -24,6 +26,7 @@ class Change:
 class DiffPanel(wx.ScrolledCanvas):
     """A panel that displays the difference between two lists of calls"""
     font: wx.Font
+    comparison: Optional[HashableComparison] = None
     changes: List[Change]
     size: wx.Size
     max_width: int
@@ -58,7 +61,6 @@ class DiffPanel(wx.ScrolledCanvas):
         self.Bind(wx.EVT_LEAVE_WINDOW, self.on_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.on_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_up)
-        pub.subscribe(self.on_show_error, CONSTANTS.PUBSUB.SHOW_ERROR)
         self.backgrounds = {
             LineType.EQUAL: settings.equal_background,
             LineType.INSERT: settings.insert_line_background,
@@ -110,9 +112,12 @@ class DiffPanel(wx.ScrolledCanvas):
         self.pen_width = CONSTANTS.WINDOWS.DIFF.DIVIDER_WIDTH
         self.diff_text_offset = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET
 
-    def on_show_error(self):
+    def show_error(self):
         """Handle a new error display event"""
         self.on_size()
+        failure: CallDifference = application.get_app().live_data.display_test.run_failure  # type: ignore
+        self.comparison = HashableComparison.from_exception(failure)
+        self.comparison.compare()
 
     def on_size(self, event: Optional[wx.SizeEvent] = None) -> None:
         """Handle a window size event"""
@@ -120,10 +125,9 @@ class DiffPanel(wx.ScrolledCanvas):
             event.Skip()
         self.changes = []
         latest_change: Optional[Change] = None
-        contents = application.get_app().live_data.compare_exception
-        if contents:
+        if self.comparison:
             self.size = self.GetClientSize()
-            text = str(contents.last_line_num())
+            text = str(self.comparison.last_line_num())
             dc = wx.ClientDC(self)
             try:
                 self.max_width, self.max_height = dc.GetTextExtent(text)
@@ -133,7 +137,7 @@ class DiffPanel(wx.ScrolledCanvas):
             self.line_height = int(self.max_height * CONSTANTS.WINDOWS.DIFF.LINE_NUM_SCALE[1])
             self.panel_offset = self.col_width + self.pen_width
             self.panel_width = self.size.width - self.panel_offset
-            for index, line in enumerate(contents.comparison_lines):
+            for index, line in enumerate(self.comparison.comparison_lines):
                 y = self.line_height * index
                 rect = wx.Rect(self.panel_offset, y, self.panel_width, self.line_height)
                 if line.line_type == LineType.EQUAL:
@@ -166,7 +170,6 @@ class DiffPanel(wx.ScrolledCanvas):
     def on_paint(self, _event: wx.PaintEvent) -> None:
         """Handle paint event"""
         app = application.get_app()
-        contents = app.live_data.compare_exception
         settings = app.settings
         dc = wx.PaintDC(self)
         try:
@@ -174,7 +177,7 @@ class DiffPanel(wx.ScrolledCanvas):
 
             dc.SetBackground(wx.Brush(settings.desktop_background))
             dc.Clear()
-            if contents is None:
+            if self.comparison is None:
                 return
             dc.SetFont(self.font)
 
@@ -189,7 +192,7 @@ class DiffPanel(wx.ScrolledCanvas):
             )
 
             # Loop over lines
-            for index, line in enumerate(contents.comparison_lines):
+            for index, line in enumerate(self.comparison.comparison_lines):
                 state = self.get_visual_state(index)
                 y = self.line_height * index
                 if state == VisualState.NORMAL:
@@ -232,9 +235,7 @@ class DiffPanel(wx.ScrolledCanvas):
 
     def draw_replacement_line(self, dc: wx.DC, index: int, panel_offset: int, line_height: int) -> None:
         """Draw a line of text in replacement mode"""
-        app = application.get_app()
-        contents = app.live_data.compare_exception
-        line = contents.comparison_lines[index]
+        line = self.comparison.comparison_lines[index]
         x = panel_offset
         y = line_height * index
         text_indent = CONSTANTS.WINDOWS.DIFF.DIFF_TEXT_OFFSET[0]

@@ -53,7 +53,6 @@ class CONSTANTS:
         NEW_NODE = "NEW_NODE"
         UPDATE_NODE = "UPDATE_NODE"
         TEST_COMPLETE = "TEST_COMPLETE"
-        SHOW_ERROR = "SHOW_ERROR"
 
     class PATHS:
         CALL_DIFF = Path(__file__).parent.resolve()

@@ -2,10 +2,11 @@
 
 from dataclasses import dataclass, field
 import logging
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Dict
 import wx
 
-from calldiff.model.comparison import HashableComparison
+from calldiff.control.run_tests import TestFile, TestFunction
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -22,4 +23,5 @@ class TestsRoot:
 class LiveData:
     """Application data not saved/restored between runs"""
     tree_root: TestsRoot = field(default_factory=TestsRoot)
-    compare_exception: Optional[HashableComparison] = None
+    test_files: Dict[Path, TestFile] = field(default_factory=dict)
+    display_test: Optional[TestFunction] = None

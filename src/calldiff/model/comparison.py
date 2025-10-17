@@ -189,6 +189,9 @@ class HashableComparison:
         """Return the number of lines needed to represent the comparison"""
         return len(self.comparison_lines)
 
+    def __bool__(self) -> bool:
+        return True
+
     def last_line_num(self) -> int:
         """Return the last line number to be displayed in the comparison"""
         return len(self.expect)

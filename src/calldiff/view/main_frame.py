@@ -8,8 +8,11 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
+from mock_wx._test_case import CallDifference
+
 from calldiff import application
 from calldiff.constants import CONSTANTS
+from calldiff.control.run_tests import TestFunction
 from calldiff.view.diff_panel import DiffPanel
 
 
@@ -23,17 +26,24 @@ class MainFrame(wx.Frame):
         self.splitter = wx.SplitterWindow(self, style=wx.SP_3D | wx.SP_LIVE_UPDATE, name="splitter")
         self.tree = wx.TreeCtrl(self.splitter, name="tree")
         app.live_data.tree_root.node_id = self.tree.AddRoot(_("Tests"), data=app.live_data.tree_root)
-        self.diff_panel = DiffPanel(self.splitter, name="diff_panel")
-        self.splitter.SplitVertically(self.tree, self.diff_panel, app.settings.sash_position)
+        self.content = wx.Panel(self.splitter, name="content")
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.content.SetSizer(sizer)
+        self.diff_panel = DiffPanel(self.content, name="diff_panel")
+        self.diff_panel.Hide()
+        sizer.Add(self.diff_panel, 1, wx.EXPAND)
+        self.splitter.SplitVertically(self.tree, self.content, app.settings.sash_position)
 
+    def complete_init(self) -> None:
+        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         pub.subscribe(self.new_node, CONSTANTS.PUBSUB.NEW_NODE)
         pub.subscribe(self.update_node, CONSTANTS.PUBSUB.UPDATE_NODE)
-        pub.subscribe(self.set_data, CONSTANTS.PUBSUB.TEST_COMPLETE)
-
-    def set_data(self):  # TODO REMOVE THIS
-        application.get_app().live_data.compare_exception.compare()
-        self.diff_panel.Refresh()
+    #     pub.subscribe(self.set_data, CONSTANTS.PUBSUB.TEST_COMPLETE)
+    #
+    # def set_data(self):  # TODO REMOVE THIS
+    #     application.get_app().live_data.compare_exception.compare()
+    #     self.diff_panel.Refresh()
 
     def on_close(self, event: wx.CloseEvent) -> None:
         """Save the frame size before closing"""
@@ -52,4 +62,26 @@ class MainFrame(wx.Frame):
 
     def update_node(self, obj) -> None:
         """Update a node in the tree"""
-        self.tree.SetItemText(obj.node_id, str(obj))
+        item_id = self.tree.GetSelection()
+        if item_id.IsOk():
+            if self.tree.GetItemData(item_id) == obj:
+                self.on_select(obj)
+
+    def on_tree(self, event: wx.TreeEvent) -> None:
+        """Handle a node selection event"""
+        self.on_select(self.tree.GetItemData(event.GetItem()))
+
+    def on_select(self, data):
+        events = application.get_app().events
+        if isinstance(data, TestFunction):
+            if data.completed:
+                if data.run_failure is None:
+                    events.display_success(data)
+                elif isinstance(data.run_failure, CallDifference):
+                    events.display_call_diff(data)
+                else:
+                    events.display_other_error(data)
+            else:
+                events.display_none(data)
+        else:
+            events.display_none(data)

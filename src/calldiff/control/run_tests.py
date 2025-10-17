@@ -14,7 +14,6 @@ from mock_wx.test_runner import Actions, FileDetails, TestCaseDetails, TestDetai
 
 from calldiff import application
 from calldiff.constants import CONSTANTS
-from calldiff.model.comparison import HashableComparison
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -71,7 +70,6 @@ class TestFile:
 class RunTestsThread(Thread):
     """A thread that runs tests"""
     objects_by_id: Dict[int, Any]
-    test_files: Dict[Path, TestFile]
     running_test: Optional[TestFunction] = None
 
     def __init__(self, base_dir: Path):
@@ -81,7 +79,7 @@ class RunTestsThread(Thread):
             [sys.executable, CONSTANTS.PATHS.TEST_RUNNER, "-l=DEBUG", base_dir], stdout=PIPE, text=True
         )
         self.objects_by_id = {}
-        self.test_files = {}
+        application.get_app().live_data.test_files = {}
 
     def recast_obj(self, obj: Any) -> Any:
         """Given an object from the subprocess, recast it into how we want to keep it in our application"""
@@ -93,7 +91,7 @@ class RunTestsThread(Thread):
         if isinstance(obj, Path):
             # A file path
             test_file = TestFile(obj)
-            self.test_files[obj] = test_file
+            application.get_app().live_data.test_files[obj] = test_file
             live_data = application.get_app().live_data
             safe_publish(CONSTANTS.PUBSUB.NEW_NODE, obj=test_file, parent=live_data.tree_root)
             return test_file
@@ -168,7 +166,4 @@ class RunTestsThread(Thread):
                 # Return code prior to exit
                 LOG.debug("return-code: %r", payload)
 
-        failure = self.test_files[list(self.test_files)[0]].test_classes[0].tests[1].run_failure  # TODO
-        application.get_app().live_data.compare_exception = HashableComparison.from_exception(failure)  # TODO
         safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)
-        safe_publish(CONSTANTS.PUBSUB.SHOW_ERROR)
