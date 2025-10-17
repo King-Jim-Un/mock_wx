@@ -16,6 +16,7 @@ from calldiff.constants import CONSTANTS
 from calldiff.control.run_tests import TestFunction
 from calldiff.view.diff_panel import DiffPanel
 from calldiff.view.menubar import MenuBar
+from calldiff.view.richtext import RichText
 from calldiff.view.statusbar import StatusBar
 
 
@@ -77,7 +78,7 @@ class MainFrame(wx.Frame):
         self.diff_panel.Hide()
         sizer.Add(self.diff_panel, 1, wx.EXPAND)
 
-        self.rich_text = richtext.RichTextCtrl(
+        self.rich_text = RichText(
             self.content, style=richtext.RE_MULTILINE | richtext.RE_READONLY, name="rich_text"
         )
         self.rich_text.Hide()
