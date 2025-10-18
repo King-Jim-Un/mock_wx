@@ -20,6 +20,7 @@ class Actions(Enum):
     LOG = auto()
     RUN_TEST = auto()
     EXIT = auto()
+    EXPOSITION = auto()  # not used when running tests but reserved for displaying text
 
 
 Command = NewType("Command", Tuple[Actions, Any])

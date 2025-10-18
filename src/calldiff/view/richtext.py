@@ -7,7 +7,7 @@ from typing import List
 import wx
 from wx import richtext
 
-from calldiff.constants import TextType
+from mock_wx.test_runner import Actions
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ _ = wx.GetTranslation
 
 @dataclass
 class TextChunk:
-    text_type: TextType
+    text_type: Actions
     text: str
 
 
@@ -26,6 +26,6 @@ class RichText(richtext.RichTextCtrl):
         super().__init__(*args, **kwargs)
         self.chunks = []
 
-    def add_chunk(self, text_type: TextType, text: str):
+    def add_chunk(self, text_type: Actions, text: str):
         self.chunks.append(TextChunk(text_type, text))
         self.AppendText(text)

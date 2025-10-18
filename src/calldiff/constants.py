@@ -39,14 +39,6 @@ class VisualState(Enum):
     COPIED = auto()
 
 
-class TextType(Enum):
-    """Text types"""
-    EXPOSITION = auto()
-    LOG = auto()
-    STDOUT = auto()
-    STDERR = auto()
-
-
 class CONSTANTS:
     """Constants"""
     class COMMANDLINE:

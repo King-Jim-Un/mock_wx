@@ -1,14 +1,17 @@
 """Event handlers"""
 
 from dataclasses import dataclass, field
+from datetime import timedelta
 import logging
 from pubsub import pub
 from typing import Any, Optional
 
 import wx
 
+from mock_wx.test_runner import Actions
+
 from calldiff import application
-from calldiff.constants import StatusFlags, CONSTANTS, TextType
+from calldiff.constants import StatusFlags, CONSTANTS
 from calldiff.control.run_tests import TestFunction
 from calldiff.model.live_data import LiveData
 from calldiff.view.main_frame import MainFrame
@@ -35,6 +38,37 @@ class EventHandlers:
     def test_complete(self) -> None:
         print(application.get_app().live_data)
 
+    @staticmethod
+    def delta_to_str(diff: timedelta) -> str:
+        text = str(diff)
+        if text.endswith("000"):
+            text = text[:-3]
+        if text.startswith("0:"):
+            text = text[2:]
+            if text.startswith("0"):
+                text = text[1:]
+                if text.startswith("0:"):
+                    text = text[2:]
+                    if text.startswith("0"):
+                        text = text[1:]
+                        if text.startswith("0."):
+                            text = f"{text[2:5]}.{text[5:]}"
+                            if text.startswith("0"):
+                                text = text[1:]
+                                if text.startswith("0"):
+                                    text = text[1:]
+                                    if text.startswith("0."):
+                                        text = text[2:]
+                                        if text.startswith("0"):
+                                            text = text[1:]
+                                            if text.startswith("0"):
+                                                text = text[1:]
+                                        return f"{text} microseconds"
+                            return f"{text} milliseconds"
+                    return f"{text} seconds"
+            return f"{text} minutes"
+        return f"{text} hours"
+
     def display_success(self, test: TestFunction) -> None:
         """Display success panel"""
         self.live_data.status.add(StatusFlags.DISPLAY_SUCCESS)
@@ -50,7 +84,11 @@ class EventHandlers:
             test.test_class,
             test,
         )
-        text_ctrl.add_chunk(TextType.EXPOSITION, text)
+        text_ctrl.add_chunk(Actions.EXPOSITION, text)
+        for text_type, text in test.stream:
+            text_ctrl.add_chunk(text_type, text)
+        text = _("SUCCESS\nRun time: %s") % self.delta_to_str(test.run_time)
+        text_ctrl.add_chunk(Actions.EXPOSITION, text)
         text_ctrl.Show()
         self.frame.content.Layout()
 
