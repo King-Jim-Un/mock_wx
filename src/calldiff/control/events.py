@@ -70,6 +70,15 @@ class EventHandlers:
             return f"{text} minutes"
         return f"{text} hours"
 
+    def display_skip(self, test: TestFunction) -> None:
+        """Display skipped panel"""
+        self.live_data.status.add(StatusFlags.DISPLAY_SUCCESS)
+        self.live_data.status.discard(StatusFlags.DISPLAY_NONE)
+        self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
+        self.live_data.status.discard(StatusFlags.DISPLAY_EXCEPTION)
+        ...  # TODO
+        self.frame.diff_panel.Hide()
+
     def display_success(self, test: TestFunction) -> None:
         """Display success panel"""
         self.live_data.status.add(StatusFlags.DISPLAY_SUCCESS)
@@ -136,6 +145,14 @@ class EventHandlers:
     def fancy(self, _event: Optional[wx.Event] = None) -> None:
         """Fancy preference toggled"""
         LOG.info("Fancy")
+
+    def passing(self, _event: Optional[wx.Event] = None) -> None:
+        """Show passing tests toggled"""
+        LOG.info("Passing tests")
+
+    def on_open(self, _event: Optional[wx.Event] = None) -> None:
+        """Select tests/suites to run"""
+        LOG.info("Open")
 
     def about(self, _event: Optional[wx.Event] = None) -> None:
         """About the application"""

@@ -2,8 +2,8 @@
 
 import logging
 from pubsub import pub
+from unittest import SkipTest
 import wx
-from wx import richtext
 
 # Constants:
 LOG = logging.getLogger(__name__)
@@ -67,7 +67,14 @@ class MainFrame(wx.Frame):
         self.splitter = wx.SplitterWindow(self, style=wx.SP_3D | wx.SP_LIVE_UPDATE, name="splitter")
 
         self.tree = wx.TreeCtrl(self.splitter, name="tree")
+        self.tree.SetImages([
+            wx.ArtProvider.GetBitmapBundle(wx.ART_FOLDER),
+            wx.ArtProvider.GetBitmapBundle(wx.ART_TICK_MARK),
+            wx.ArtProvider.GetBitmapBundle(wx.ART_CROSS_MARK),
+            wx.ArtProvider.GetBitmapBundle(wx.ART_MISSING_IMAGE),
+        ])
         app.live_data.tree_root.node_id = self.tree.AddRoot(_("Tests"), data=app.live_data.tree_root)
+        self.tree.SetItemImage(app.live_data.tree_root.node_id, 0)
 
         self.content = wx.Panel(self.splitter, name="content")
 
@@ -111,9 +118,19 @@ class MainFrame(wx.Frame):
         """Add a new node to the tree"""
         obj.node_id = self.tree.AppendItem(parent.node_id, str(obj), data=obj)
         self.tree.Expand(parent.node_id)
+        self.tree.SetItemImage(obj.node_id, 0)
 
     def update_node(self, obj) -> None:
         """Update a node in the tree"""
+        if isinstance(obj, TestFunction):
+            failure = obj.run_failure
+            if failure is None:
+                image_num = 1
+            elif isinstance(failure, SkipTest):
+                image_num = 3
+            else:
+                image_num = 2
+            self.tree.SetItemImage(obj.node_id, image_num)
         item_id = self.tree.GetSelection()
         if item_id.IsOk():
             if self.tree.GetItemData(item_id) == obj:
@@ -130,6 +147,8 @@ class MainFrame(wx.Frame):
             if data.completed:
                 if data.run_failure is None:
                     events.display_success(data)
+                elif isinstance(data.run_failure, SkipTest):
+                    events.display_skip(data)
                 elif isinstance(data.run_failure, CallDifference):
                     events.display_call_diff(data)
                 else:

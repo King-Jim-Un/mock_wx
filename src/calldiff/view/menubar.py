@@ -33,14 +33,23 @@ class MenuBar(wx.MenuBar):
         events = application.get_app().events
 
         file_menu = Menu()
+        file_menu.add(_("&Open...\tCtrl-O"), events.on_open, _("Select tests/suites to run"), wx.ID_OPEN)
+        file_menu.AppendSeparator()
         file_menu.add(_("&Quit"), events.quit, _("Close the application"), wx.ID_EXIT)
         self.Append(file_menu, _("&File"))
 
         view_menu = Menu()
-        view_menu.add(_("&Preferences"), events.preferences, _("Configure application preferences"), wx.ID_PREFERENCES)
         self.fancy = view_menu.add(
             _("Show &Fancy Diff"), events.fancy, _("Show a fancy diff instead of unified diff"), kind=wx.ITEM_CHECK
         )
+        self.passing = view_menu.add(
+            _("Show &Passing Tests"),
+            events.passing,
+            _("Show all tests in tree, even those that passed"),
+            kind=wx.ITEM_CHECK,
+        )
+        view_menu.AppendSeparator()
+        view_menu.add(_("&Preferences"), events.preferences, _("Configure application preferences"), wx.ID_PREFERENCES)
         self.Append(view_menu, _("&View"))
 
         help_menu = Menu()
