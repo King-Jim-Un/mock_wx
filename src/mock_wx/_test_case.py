@@ -1,14 +1,15 @@
 from argparse import Namespace
+from dataclasses import dataclass, field
 from importlib import import_module
 import os
-from typing import Tuple, Any, List
+from typing import Tuple, Any, List, Dict
 from unittest import TestCase
 from unittest.mock import Mock, _Call
 
 # Globals:
 G_APP = None
 G_MOCK = Mock()
-G_OBJS = Namespace()
+G_OBJS: Dict[str, "GObjs"] = {}
 
 # Types:
 CallParts = Tuple[str, List[str], List[Tuple[str, str]]]
@@ -54,25 +55,45 @@ def _find_patch_path(patch_str: str) -> Tuple[Any, Mock, str, Any]:
     return prev_obj, mock, part, obj
 
 
+def _reset_mock():
+    G_MOCK.reset_mock()
+    G_MOCK.GetApp.return_value = G_APP
+    G_OBJS.clear()
+
+
+@dataclass
+class GObjs:
+    objs: list = field(default_factory=list)
+
+    def new(self, obj) -> str:
+        items = len(self.objs)
+        self.objs.append(obj)
+        return f"obj{items}"
+
+    def __getattr__(self, item: str):
+        assert item.startswith("obj")
+        return self.objs[int(item[3:])]
+
+
 class BaseClass:
     def __init__(self, *args, **kwargs):
         if "name" in kwargs:
             name = kwargs["name"]
             if name in ["dut", "app"]:
                 self._name = f"self.{name}"
-                self._mock = getattr(G_MOCK, name)
+            elif name.startswith("/"):
+                self._name = name[1:]
             else:
                 self._name = f"self.dut.{name}"
-                self._mock = getattr(G_MOCK.dut, name)
+            self._mock = getattr(G_MOCK, self._name)
         else:
             name = self.__class__.__name__
-            self._mock = getattr(G_MOCK, name)
             if name not in G_OBJS:
-                setattr(G_OBJS, name, [])
-            value = getattr(G_OBJS, name)
-            self._name = f"self.objs.{name}[{len(value)}]"
-            value.append(self)
-        self._mock(*args, **kwargs)
+                G_OBJS[name] = GObjs()
+            self._name = f"self.{name}.{G_OBJS[name].new(self)}"
+            self._mock = getattr(G_MOCK, name).return_value
+
+        getattr(G_MOCK, self.__class__.__name__)(*args, **kwargs)
 
     def __str__(self):
         return self._name
@@ -111,11 +132,10 @@ class wxTestCase(TestCase):
             def __enter__(self):
                 from mock_wx.wx import App
 
-                global G_APP, G_OBJS
+                global G_APP
 
                 G_APP = App(name="app")
-                G_MOCK.reset_mock()
-                G_OBJS = Namespace()
+                _reset_mock()
                 for patch_str in patches:
                     obj, mock, part, value = _find_patch_path(patch_str)
                     wxTestCase.test_case.patch_list.append((obj, part, value))
@@ -156,10 +176,7 @@ class wxTestCase(TestCase):
             """Internal object for context"""
 
             def __enter__(self):
-                global G_OBJS
-
-                G_MOCK.reset_mock()
-                G_OBJS = Namespace()
+                _reset_mock()
                 for patch_str in patches:
                     obj, mock, part = _find_patch_path(patch_str)
                     wxTestCase.test_case.patch_list.append((obj, part, getattr(obj, part)))
@@ -207,10 +224,12 @@ class wxTestCase(TestCase):
         """Return the current app object"""
         return G_APP
 
-    @property
-    def objs(self):
+    def __getattr__(self, item):
         """Used to access ephemeral objects"""
-        return G_OBJS
+        if item in G_OBJS:
+            return G_OBJS[item]
+        else:
+            raise AttributeError(item)
 
     @property
     def mock(self):
@@ -222,16 +241,17 @@ def note_func(func_name):
     def wrapper1(func):
         def wrapper2(*args2, **kwargs2):
             obj, mock, part, value = _find_patch_path(func_name)
+            mock_name = part if func_name.startswith("/") else f"self.{part}"
             old_func = getattr(obj, part)
 
             def wrapper3(*args3, **kwargs3):
-                getattr(mock, part)(*args3, **kwargs3)
+                getattr(mock, mock_name)(*args3, **kwargs3)
                 try:
                     return_value = old_func(*args3, **kwargs3)
                     if return_value is not None:
-                        getattr(mock, f"{part}_return_value")(return_value)
+                        getattr(mock, f"{mock_name}_return_value")(return_value)
                 except Exception as error:
-                    getattr(mock, f"{part}_raised")(error)
+                    getattr(mock, f"{mock_name}_raised")(error)
                     raise
                 return return_value
 
