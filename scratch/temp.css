@@ -1,4 +1,8 @@
 .color {
+    exposition_text: rgb(54, 124, 54);
+    log-text: rgb(54, 68, 124);
+    stdout-text: rgb(0, 0, 0);
+    stderr-text: rgb(106, 32, 32);
     desktop-background: rgb(51, 51, 51);
     number-background: rgb(228, 228, 200);
     number-text: rgb(0, 0, 0);

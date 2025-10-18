@@ -14,6 +14,12 @@ _ = wx.GetTranslation
 @dataclass
 class Preferences(AppSettings):
     """Preference settings"""
+    exposition_text: wx.Colour = field(default_factory=lambda: wx.Colour(54, 124, 54))
+    bold_weight: int = wx.FONTWEIGHT_BOLD
+    log_text: wx.Colour = field(default_factory=lambda: wx.Colour(54, 68, 124))
+    stdout_text: wx.Colour = field(default_factory=lambda: wx.Colour(0, 0, 0))
+    stderr_text: wx.Colour = field(default_factory=lambda: wx.Colour(106, 32, 32))
+    show_fancy_diff: bool = True  # TODO
     font_size: int = 11
     desktop_background: wx.Colour = field(default_factory=lambda: wx.Colour(51, 51, 51))
     number_background: wx.Colour = field(default_factory=lambda: wx.Colour(228, 228, 200))

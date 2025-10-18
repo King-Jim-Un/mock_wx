@@ -21,6 +21,7 @@ class Actions(Enum):
     RUN_TEST = auto()
     EXIT = auto()
     EXPOSITION = auto()  # not used when running tests but reserved for displaying text
+    BOLD = auto()
 
 
 Command = NewType("Command", Tuple[Actions, Any])

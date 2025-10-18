@@ -79,7 +79,7 @@ class MainFrame(wx.Frame):
         sizer.Add(self.diff_panel, 1, wx.EXPAND)
 
         self.rich_text = RichText(
-            self.content, style=richtext.RE_MULTILINE | richtext.RE_READONLY, name="rich_text"
+            self.content, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_RICH, name="rich_text"
         )
         self.rich_text.Hide()
         sizer.Add(self.rich_text, 1, wx.EXPAND)
@@ -91,6 +91,7 @@ class MainFrame(wx.Frame):
 
     def complete_init(self) -> None:
         """Binding event handlers"""
+        self.menubar.fancy.Check(application.get_app().settings.show_fancy_diff)
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         pub.subscribe(self.new_node, CONSTANTS.PUBSUB.NEW_NODE)

@@ -24,6 +24,7 @@ _ = wx.GetTranslation
 @dataclass
 class EventHandlers:
     """Event handler class"""
+
     displayed: Any = None
     frame: MainFrame = field(init=False)
     live_data: LiveData = field(init=False)
@@ -79,7 +80,7 @@ class EventHandlers:
         self.live_data.display_test = test
         text_ctrl = self.frame.rich_text
         text_ctrl.Clear()
-        text = _("Test file: %s\nTest suite: %s\nUnit test: %s\n") % (
+        text = _("\bTest file:\b %s\n\bTest suite:\b %s\n\bUnit test:\b %s\n\n") % (
             test.test_class.test_file.path,
             test.test_class,
             test,
@@ -87,7 +88,7 @@ class EventHandlers:
         text_ctrl.add_chunk(Actions.EXPOSITION, text)
         for text_type, text in test.stream:
             text_ctrl.add_chunk(text_type, text)
-        text = _("SUCCESS\nRun time: %s") % self.delta_to_str(test.run_time)
+        text = _("\n\bSUCCESS\nRun time:\b %s") % self.delta_to_str(test.run_time)
         text_ctrl.add_chunk(Actions.EXPOSITION, text)
         text_ctrl.Show()
         self.frame.content.Layout()
@@ -111,6 +112,7 @@ class EventHandlers:
         self.live_data.status.discard(StatusFlags.DISPLAY_NONE)
         self.live_data.status.discard(StatusFlags.DISPLAY_DIFF)
         self.frame.diff_panel.Hide()
+        ...  # TODO
         self.frame.rich_text.Show()
         self.frame.content.Layout()
 
@@ -123,14 +125,22 @@ class EventHandlers:
         self.frame.diff_panel.Hide()
         self.frame.rich_text.Hide()
 
-    def preferences(self, _event: Optional[wx.Event]=None)->None:
+    def preferences(self, _event: Optional[wx.Event] = None) -> None:
         """Configure application preferences"""
         LOG.info("Preferences")
 
-    def quit(self, _event: Optional[wx.Event]=None)-> None:
+    def quit(self, _event: Optional[wx.Event] = None) -> None:
         """Close the application"""
         application.get_app().frame.Close()
 
-    def about(self, _event: Optional[wx.Event]=None)->None:
+    def fancy(self, _event: Optional[wx.Event] = None) -> None:
+        """Fancy preference toggled"""
+        LOG.info("Fancy")
+
+    def about(self, _event: Optional[wx.Event] = None) -> None:
         """About the application"""
         LOG.info("About")
+
+
+# TODO: show incomplete test
+# TODO: test completion event should update if selected test
