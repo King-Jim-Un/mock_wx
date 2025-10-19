@@ -1,10 +1,9 @@
-from argparse import Namespace
 from dataclasses import dataclass, field
 from importlib import import_module
 import os
 from typing import Tuple, Any, List, Dict
 from unittest import TestCase
-from unittest.mock import Mock, _Call
+from unittest.mock import Mock, _Call, call
 
 # Globals:
 G_APP = None
@@ -300,3 +299,5 @@ def patch(func_name):
         return wrapper2
 
     return wrapper1
+
+__all__ = ["wxTestCase", "note_func", "patch"]

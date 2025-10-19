@@ -19,7 +19,7 @@ class MainFrame(wx.Frame):
     @staticmethod
     def on_submit(_event: wx.CommandEvent) -> None:
         """Handle submit event"""
-        wx.GetApp().cmd_processor.Submit(Command())
+        wx.GetApp().cmd_processor.Submit(Command(True))
 
     @staticmethod
     def on_undo(_event: wx.CommandEvent) -> None:

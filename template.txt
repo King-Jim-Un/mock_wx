@@ -1,0 +1,39 @@
+"""<what this test file tests>"""
+
+from mock_wx.test_case import wxTestCase, note_func
+
+import logging
+from unittest.mock import call
+import wx
+
+import <the module you'll be testing>
+
+# Constants:
+LOG = logging.getLogger(__name__)
+
+
+class Test<the class you'll be testing>(wxTestCase):
+    def setUp(self):
+        with self.create_dut():
+            self.dut = <instantiate your DUT class here>
+        self.SETUP = [call()]
+
+    def test_construct(self):
+        """The setUp() function should instantiate the DUT"""
+        self.check(self.SETUP)
+
+    @note_func("<function you'll be testing>")
+    def test_<function name>(self) -> None:
+        """Should <what this function should do>"""
+        expect = self.SETUP
+
+        # <describe the execution path> or
+        LOG.info("<describe the execution path>")
+        <steps to execute the path>
+        expect += [call()]
+
+        # <lather, rinse, repeat>
+        <steps to execute the path>
+        expect += [call()]
+
+        self.check(expect)
