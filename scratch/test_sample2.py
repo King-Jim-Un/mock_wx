@@ -31,7 +31,7 @@ class TestMainFrame(wxTestCase):
         self.check(self.SETUP)
 
     @note_func("on_close")
-    def test_on_close(self):
+    def test_on_close(self) -> None:
         """Should display a confirmation dialog before losing any unsaved changes"""
         expect = self.SETUP
 
