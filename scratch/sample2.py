@@ -52,14 +52,20 @@ class MainFrame(wx.Frame):
 
 class Command(wx.Command):
     """Do nothing"""
+
     def Do(self) -> bool:
         return True
+
     def Undo(self) -> bool:
         return True
 
 
 class MyApp(wx.App):
+    frame: MainFrame
+    cmd_processor: wx.CommandProcessor
+
     def OnInit(self) -> bool:
+        """Initialize the application"""
         self.frame = MainFrame(None, -1, "Name and Address", name="frame")
         self.frame.Show()
         self.cmd_processor = wx.CommandProcessor()

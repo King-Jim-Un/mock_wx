@@ -1,10 +1,10 @@
-from mock_wx.test_case import wxTestCase, note_func, patch
+from mock_wx import wxTestCase, note_func, patch
 
 import logging
 from unittest.mock import call
 import wx
 
-import sample2
+from sample2 import MainFrame
 
 LOG = logging.getLogger(__name__)
 
@@ -12,8 +12,8 @@ LOG = logging.getLogger(__name__)
 class TestMainFrame(wxTestCase):
     def setUp(self):
         with self.create_dut():
-            self.dut = sample2.MainFrame(None, name="dut")
-        self.SETUP = [
+            self.dut = MainFrame(None, name="dut")
+        self.ecl = [
             call.MainFrame(None, name="dut"),
             call.Point(10, 10),
             call.Button(self.dut, label="Submit", pos=self.Point.obj0, name="button1"),
@@ -28,20 +28,20 @@ class TestMainFrame(wxTestCase):
         ]
 
     def test_construct(self):
-        self.check(self.SETUP)
+        self.check(self.ecl)
 
     @note_func("on_close")
     def test_on_close(self) -> None:
         """Should display a confirmation dialog before losing any unsaved changes"""
-        expect = self.SETUP
+        ecl = self.ecl
 
         # No unsaved changes
         event = wx.CloseEvent(name="/event")
-        expect += [call.CloseEvent(name="/event")]
+        ecl += [call.CloseEvent(name="/event")]
         event.CanVeto.return_value = True
         self.app.cmd_processor.IsDirty.return_value = False
         self.dut.on_close(event)
-        expect += [
+        ecl += [
             call.self.on_close(event),
             call.event.CanVeto(),
             call.GetApp(),
@@ -53,7 +53,7 @@ class TestMainFrame(wxTestCase):
         self.app.cmd_processor.IsDirty.return_value = True
         self.mock.MessageDialog.return_value.ShowModal.return_value = wx.ID_NO
         self.dut.on_close(event)
-        expect += [
+        ecl += [
             call.self.on_close(event),
             call.event.CanVeto(),
             call.GetApp(),
@@ -72,7 +72,7 @@ class TestMainFrame(wxTestCase):
         # Same but the user clicks "Yes"
         self.mock.MessageDialog.return_value.ShowModal.return_value = wx.ID_YES
         self.dut.on_close(event)
-        expect += [
+        ecl += [
             call.self.on_close(event),
             call.event.CanVeto(),
             call.GetApp(),
@@ -88,4 +88,4 @@ class TestMainFrame(wxTestCase):
             call.event.Skip(),
         ]
 
-        self.check(expect)
+        self.check(ecl)

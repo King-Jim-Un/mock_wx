@@ -299,3 +299,6 @@ class DiffPanel(wx.ScrolledCanvas):
         """Disable the COPIED message and return to normal operation"""
         self.RefreshRect(self.changes[self.copied_change].rect)
         self.copied_change = None
+# TODO: missing comma at the end of each line
+# TODO: underscores are clipped off the bottom of the line
+# TODO: working scrollbar
