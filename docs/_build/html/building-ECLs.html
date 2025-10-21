@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building call Lists &mdash; mock_wx  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The Major Players" href="major-players.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mock_wx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic-example.html">Example Test:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ (Frequently Asked Questions)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing mock_wx and CallDiff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="major-players.html">The Major Players</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building <cite>call</cite> Lists</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mock_wx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Building <cite>call</cite> Lists</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/building-ECLs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="building-call-lists">
+<h1>Building <cite>call</cite> Lists<a class="headerlink" href="#building-call-lists" title="Link to this heading"></a></h1>
+<p>“You said it was easy to build these ECLs. Okay, so how do we do it?”</p>
+<p>Let’s flesh out the rest of that example source code. Normally, all four of the <cite>MainFrame</cite>, <cite>Command</cite>, <cite>MyApp</cite>, and
+main code would be in separate files, but I’ve lumped them together for expediency:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">wx</span>
+
+<span class="c1"># Constants:</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetTranslation</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">),</span> <span class="n">pos</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_submit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button2</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Undo&quot;</span><span class="p">),</span> <span class="n">pos</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button2&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button2</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_undo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button3</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Redo&quot;</span><span class="p">),</span> <span class="n">pos</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button3</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_redo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_submit</span><span class="p">(</span><span class="n">_event</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CommandEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle submit event&quot;&quot;&quot;</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">Submit</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_undo</span><span class="p">(</span><span class="n">_event</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CommandEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle undo event&quot;&quot;&quot;</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">Undo</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_redo</span><span class="p">(</span><span class="n">_event</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CommandEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle redo event&quot;&quot;&quot;</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">Redo</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handler for close events&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">()</span> <span class="ow">and</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">():</span>
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;You&#39;ll lose your unsaved changes if you quit now. Quit anyway?&quot;</span><span class="p">),</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Unsaved Changes&quot;</span><span class="p">),</span>
+                <span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_NO</span><span class="p">:</span>
+                    <span class="n">event</span><span class="o">.</span><span class="n">Veto</span><span class="p">()</span>
+                    <span class="k">return</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">dialog</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Command</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Do nothing&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">Do</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">Undo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
+    <span class="n">frame</span><span class="p">:</span> <span class="n">MainFrame</span>
+    <span class="n">cmd_processor</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CommandProcessor</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the application&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Name and Address&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_processor</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CommandProcessor</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">MyApp</span><span class="p">()</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Please note how I’ve used the <cite>name</cite> attribute in this code. I’ve used <cite>name</cite> when the new object gets saved in a
+<cite>self.XXX</cite> member and haven’t when it wasn’t. When I did, I always made the <cite>name</cite> match the member’s name. This helps
+mock_wx identify objects and will make it easier to copy ECLs into your code.</p>
+<p>We want to test <cite>MyFrame.on_close()</cite>, but first, we’ll need to copy the template and edit in the obvious bits:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Test the MainFrame class&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mock_wx.test_case</span><span class="w"> </span><span class="kn">import</span> <span class="n">wxTestCase</span><span class="p">,</span> <span class="n">note_func</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">call</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">wx</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sample2</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainFrame</span>
+
+<span class="c1"># Constants:</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestMainFrame</span><span class="p">(</span><span class="n">wxTestCase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dut</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dut</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dut&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SETUP</span> <span class="o">=</span> <span class="p">[</span><span class="n">call</span><span class="p">()]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_construct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The setUp() function should instantiate the DUT&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SETUP</span><span class="p">)</span>
+
+    <span class="c1"># @note_func(&quot;on_close&quot;)</span>
+    <span class="c1"># def test_on_close(self) -&gt; None:</span>
+    <span class="c1">#     &quot;&quot;&quot;Should display a confirmation dialog before losing any unsaved changes&quot;&quot;&quot;</span>
+    <span class="c1">#     expect = self.SETUP</span>
+    <span class="c1">#</span>
+    <span class="c1">#     # No unsaved changes</span>
+    <span class="c1">#     # Unsaved changes, the user clicks &quot;No&quot; on the dialog</span>
+    <span class="c1">#     # Same but the user clicks &quot;Yes&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     self.check(expect)</span>
+</pre></div>
+</div>
+<p>I’ve commented out <cite>test_on_close()</cite> for now so we can focus on self.ecl. The ECL defaults to <cite>call()</cite> because we know
+that’s incorrect. Let’s run the test as-is and look at the output:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt;<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>unittest<span class="w"> </span>test_sample2.py
+<span class="nv">F</span>
+<span class="o">======================================================================</span>
+FAIL:<span class="w"> </span>test_construct<span class="w"> </span><span class="o">(</span>test_sample2.TestMainFrame.test_construct<span class="o">)</span>
+----------------------------------------------------------------------
+Traceback<span class="w"> </span><span class="o">(</span>most<span class="w"> </span>recent<span class="w"> </span>call<span class="w"> </span>last<span class="o">)</span>:
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\git\CallDiff\scratch\test_sample2.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">32</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>test_construct
+<span class="w">    </span>self.check<span class="o">(</span>self.ecl<span class="o">)</span>
+<span class="w">    </span>~~~~~~~~~~^^^^^^^^^^
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\git\CallDiff\src\mock_wx\_test_case.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">219</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>check
+<span class="w">    </span>self.mock.assert_has_calls<span class="o">(</span>expect<span class="o">)</span>
+<span class="w">    </span>~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\Python313\Lib\unittest\mock.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">1014</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>assert_has_calls
+<span class="w">    </span>raise<span class="w"> </span>AssertionError<span class="o">(</span>
+<span class="w">    </span>...&lt;<span class="m">3</span><span class="w"> </span>lines&gt;...
+<span class="w">    </span><span class="o">)</span><span class="w"> </span>from<span class="w"> </span>cause
+AssertionError:<span class="w"> </span>Calls<span class="w"> </span>not<span class="w"> </span>found.
+Expected:<span class="w"> </span><span class="o">[</span>call<span class="o">()]</span>
+<span class="w">  </span>Actual:<span class="w"> </span><span class="o">[</span>call.MainFrame<span class="o">(</span>None,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;dut&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">10</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Submit&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj0,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button1&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button1.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_submit<span class="w"> </span>at<span class="w"> </span>0x000002130E412DE0&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">50</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Undo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj1,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button2&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button2.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_undo<span class="w"> </span>at<span class="w"> </span>0x000002130E412E80&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">90</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Redo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj2,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button3&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button3.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_redo<span class="w"> </span>at<span class="w"> </span>0x000002130E412F20&gt;<span class="o">)</span>,
+<span class="w"> </span>call.self.dut.Bind<span class="o">({</span><span class="s1">&#39;EVT_CLOSE&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;bound<span class="w"> </span>method<span class="w"> </span>MainFrame.on_close<span class="w"> </span>of<span class="w"> </span>self.dut&gt;<span class="o">)]</span>
+
+----------------------------------------------------------------------
+Ran<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.010s
+
+FAILED<span class="w"> </span><span class="o">(</span><span class="nv">failures</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>And there it is, almost perfect, mock_wx is showing us the actual call list. There’s only four bits that it couldn’t
+quite guess:
+* <cite>&lt;function MainFrame.on_submit at 0x000002130E412DE0&gt;</cite> should have been <cite>self.dut.on_submit</cite>
+* <cite>&lt;function MainFrame.on_undo at 0x000002130E412E80&gt;</cite> should have been <cite>self.dut.on_undo</cite>
+* <cite>&lt;function MainFrame.on_redo at 0x000002130E412F20&gt;</cite> should have been <cite>self.dut.on_redo</cite>
+* <cite>&lt;bound method MainFrame.on_close of self.dut&gt;</cite> should have been <cite>self.dut.on_close</cite></p>
+<p>Let’s copy those actual calls into our ECL and fix the function names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dut</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dut</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dut&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ecl</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dut&quot;</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Submit&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Point</span><span class="o">.</span><span class="n">obj0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button1&quot;</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">button1</span><span class="o">.</span><span class="n">Bind</span><span class="p">({</span><span class="s2">&quot;EVT_BUTTON&quot;</span><span class="p">},</span> <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_submit</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Undo&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Point</span><span class="o">.</span><span class="n">obj1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button2&quot;</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">button2</span><span class="o">.</span><span class="n">Bind</span><span class="p">({</span><span class="s2">&quot;EVT_BUTTON&quot;</span><span class="p">},</span> <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_undo</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Redo&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Point</span><span class="o">.</span><span class="n">obj2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;button3&quot;</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">button3</span><span class="o">.</span><span class="n">Bind</span><span class="p">({</span><span class="s2">&quot;EVT_BUTTON&quot;</span><span class="p">},</span> <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_redo</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">Bind</span><span class="p">({</span><span class="s2">&quot;EVT_CLOSE&quot;</span><span class="p">},</span> <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">),</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+<p>Once again, note the I used the <cite>name</cite> attribute when creating the DUT. This won’t always be possible, but we’ll get the
+best results when we can.</p>
+<p>Now, the test should now pass.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt;<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>unittest<span class="w"> </span>test_sample2.py
+.
+----------------------------------------------------------------------
+Ran<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.010s
+
+OK
+</pre></div>
+</div>
+<p>Let’s fill in the fist part of our <cite>test_on_close()</cite> function as discussed earlier but without the “giving you the
+answer” bit of me including the ECLs. Instead, we’ll just use one <cite>call()</cite> like before:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@note_func</span><span class="p">(</span><span class="s2">&quot;on_close&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Should display a confirmation dialog before losing any unsaved changes&quot;&quot;&quot;</span>
+    <span class="n">ecl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecl</span>
+
+    <span class="c1"># No unsaved changes</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)</span>
+    <span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span><span class="n">call</span><span class="p">()]</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span><span class="n">call</span><span class="p">()]</span>
+
+    <span class="c1"># Unsaved changes, the user clicks &quot;No&quot; on the dialog</span>
+    <span class="c1"># Same but the user clicks &quot;Yes&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">ecl</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When we run the test this time, we’ll see:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt;<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>unittest<span class="w"> </span>test_sample2.py
+.F
+<span class="o">======================================================================</span>
+FAIL:<span class="w"> </span>test_on_close<span class="w"> </span><span class="o">(</span>test_sample2.TestMainFrame.test_on_close<span class="o">)</span>
+----------------------------------------------------------------------
+Traceback<span class="w"> </span><span class="o">(</span>most<span class="w"> </span>recent<span class="w"> </span>call<span class="w"> </span>last<span class="o">)</span>:
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\git\CallDiff\src\mock_wx\_test_case.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">261</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>wrapper2
+<span class="w">    </span><span class="nv">return_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>func<span class="o">(</span>*args2,<span class="w"> </span>**kwargs2<span class="o">)</span>
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\git\CallDiff\scratch\test_sample2.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">109</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>test_on_close
+<span class="w">    </span>self.check<span class="o">(</span>ecl<span class="o">)</span>
+<span class="w">    </span>~~~~~~~~~~^^^^^
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\git\CallDiff\src\mock_wx\_test_case.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">219</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>check
+<span class="w">    </span>self.mock.assert_has_calls<span class="o">(</span>expect<span class="o">)</span>
+<span class="w">    </span>~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+<span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;C:\Python313\Lib\unittest\mock.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">1014</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>assert_has_calls
+<span class="w">    </span>raise<span class="w"> </span>AssertionError<span class="o">(</span>
+<span class="w">    </span>...&lt;<span class="m">3</span><span class="w"> </span>lines&gt;...
+<span class="w">    </span><span class="o">)</span><span class="w"> </span>from<span class="w"> </span>cause
+AssertionError:<span class="w"> </span>Calls<span class="w"> </span>not<span class="w"> </span>found.
+Expected:<span class="w"> </span><span class="o">[</span>call.MainFrame<span class="o">(</span>None,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;dut&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">10</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Submit&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj0,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button1&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button1.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_submit<span class="w"> </span>at<span class="w"> </span>0x00000239D84DAFC0&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">50</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Undo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj1,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button2&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button2.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_undo<span class="w"> </span>at<span class="w"> </span>0x00000239D84DB060&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">90</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Redo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj2,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button3&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button3.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_redo<span class="w"> </span>at<span class="w"> </span>0x00000239D84DB100&gt;<span class="o">)</span>,
+<span class="w"> </span>call.self.dut.Bind<span class="o">({</span><span class="s1">&#39;EVT_CLOSE&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;bound<span class="w"> </span>method<span class="w"> </span>MainFrame.on_close<span class="w"> </span>of<span class="w"> </span>self.dut&gt;<span class="o">)</span>,
+<span class="w"> </span>call<span class="o">()</span>,
+<span class="w"> </span>call<span class="o">()]</span>
+<span class="w">  </span>Actual:<span class="w"> </span><span class="o">[</span>call.MainFrame<span class="o">(</span>None,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;dut&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">10</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Submit&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj0,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button1&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button1.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_submit<span class="w"> </span>at<span class="w"> </span>0x00000239D84DAFC0&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">50</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Undo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj1,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button2&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button2.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_undo<span class="w"> </span>at<span class="w"> </span>0x00000239D84DB060&gt;<span class="o">)</span>,
+<span class="w"> </span>call.Point<span class="o">(</span><span class="m">10</span>,<span class="w"> </span><span class="m">90</span><span class="o">)</span>,
+<span class="w"> </span>call.Button<span class="o">(</span>self.dut,<span class="w"> </span><span class="nv">label</span><span class="o">=</span><span class="s1">&#39;Redo&#39;</span>,<span class="w"> </span><span class="nv">pos</span><span class="o">=</span>self.Point.obj2,<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;button3&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.dut.button3.Bind<span class="o">({</span><span class="s1">&#39;EVT_BUTTON&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>MainFrame.on_redo<span class="w"> </span>at<span class="w"> </span>0x00000239D84DB100&gt;<span class="o">)</span>,
+<span class="w"> </span>call.self.dut.Bind<span class="o">({</span><span class="s1">&#39;EVT_CLOSE&#39;</span><span class="o">}</span>,<span class="w"> </span>&lt;bound<span class="w"> </span>method<span class="w"> </span>MainFrame.on_close<span class="w"> </span>of<span class="w"> </span>self.dut&gt;<span class="o">)</span>,
+<span class="w"> </span>call.CloseEvent<span class="o">(</span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;/event&#39;</span><span class="o">)</span>,
+<span class="w"> </span>call.self.on_close<span class="o">(</span>event<span class="o">)</span>,
+<span class="w"> </span>call.event.CanVeto<span class="o">()</span>,
+<span class="w"> </span>call.GetApp<span class="o">()</span>,
+<span class="w"> </span>call.self.app.cmd_processor.IsDirty<span class="o">()</span>,
+<span class="w"> </span>call.event.Skip<span class="o">()]</span>
+
+----------------------------------------------------------------------
+Ran<span class="w"> </span><span class="m">2</span><span class="w"> </span>tests<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.012s
+
+FAILED<span class="w"> </span><span class="o">(</span><span class="nv">failures</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>The <cite>test_constructor()</cite> function is still passing, but the new <cite>test_on_close()</cite> doesn’t. We can see the ECL had all
+the calls from the constructor, and there’s the two <cite>call()</cite> elements we added as placeholders. Below that is the actual
+calls. This includes the constructor calls, a call to create the event, and calls that match what we’d expect when we
+trace through the function by hand.</p>
+<p>We don’t even need to massage these calls. They already look exactly as we’d hope. So, let’s paste them into their
+appropriate slots:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@note_func</span><span class="p">(</span><span class="s2">&quot;on_close&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Should display a confirmation dialog before losing any unsaved changes&quot;&quot;&quot;</span>
+    <span class="n">ecl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecl</span>
+
+    <span class="c1"># No unsaved changes</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)</span>
+    <span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span><span class="n">call</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)]</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">(),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">GetApp</span><span class="p">(),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">(),</span>
+        <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">(),</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Unsaved changes, the user clicks &quot;No&quot; on the dialog</span>
+    <span class="c1"># Same but the user clicks &quot;Yes&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">ecl</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once again, the tests pass:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&gt;<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>unittest<span class="w"> </span>test_sample2.py
+..
+----------------------------------------------------------------------
+Ran<span class="w"> </span><span class="m">2</span><span class="w"> </span>tests<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.010s
+
+OK
+</pre></div>
+</div>
+<p>And that’s 90% of mock_wx testing!
+* Write the tests with <cite>call()</cite> placeholders in the ECLs.
+* Run the test.
+* Read and verify the actual calls to make sure the code is executing as you expect.
+* Copy and edit the calls into your ECLs.
+* Re-run the test to make sure it passes now.
+* Proceed onto the next part of the test—lather, rinse, repeat.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="major-players.html" class="btn btn-neutral float-left" title="The Major Players" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jim King.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

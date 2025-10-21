@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Major Players &mdash; mock_wx  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building call Lists" href="building-ECLs.html" />
+    <link rel="prev" title="Installing mock_wx and CallDiff" href="installing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mock_wx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic-example.html">Example Test:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ (Frequently Asked Questions)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing mock_wx and CallDiff</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Major Players</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#test-files">Test Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-mock-wx"><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">mock_wx</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wxtestcase"><code class="docutils literal notranslate"><span class="pre">wxTestCase</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#def-setup-self"><code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">setUp(self):</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-dut"><code class="docutils literal notranslate"><span class="pre">self.dut</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-app"><code class="docutils literal notranslate"><span class="pre">self.app</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-ecl"><code class="docutils literal notranslate"><span class="pre">self.ecl</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#with-self-create-dut"><code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">self.create_dut():</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#def-test-construct-self"><code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">test_construct(self):</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#note-func"><code class="docutils literal notranslate"><span class="pre">&#64;note_func(...)</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#expect-self-ecl"><code class="docutils literal notranslate"><span class="pre">expect</span> <span class="pre">=</span> <span class="pre">self.ecl</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ecl"><code class="docutils literal notranslate"><span class="pre">ecl</span> <span class="pre">+=</span> <span class="pre">[...]</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-mock"><code class="docutils literal notranslate"><span class="pre">self.mock</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#self-check-ecl"><code class="docutils literal notranslate"><span class="pre">self.check(ecl)</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#patch"><code class="docutils literal notranslate"><span class="pre">&#64;patch()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#template-txt"><code class="docutils literal notranslate"><span class="pre">template.txt</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building-ECLs.html">Building <cite>call</cite> Lists</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mock_wx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">The Major Players</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/major-players.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-major-players">
+<h1>The Major Players<a class="headerlink" href="#the-major-players" title="Link to this heading"></a></h1>
+<p>Let’s go through the major moving parts before we dive any deeper:</p>
+<section id="test-files">
+<h2>Test Files<a class="headerlink" href="#test-files" title="Link to this heading"></a></h2>
+<p>As you create your tests, you’ll write one test file for each file of source code—the ones that have classes with member
+functions, at least. If your source file is named <code class="docutils literal notranslate"><span class="pre">src/view/widget.py</span></code>, then you should name your test file
+<code class="docutils literal notranslate"><span class="pre">test/view/test_widget.py</span></code>. I strongly recommend mirroring your source files with test files arranged in the same
+directory structure, but your test filenames <em>must</em> fit the pattern <code class="docutils literal notranslate"><span class="pre">test_*.py</span></code>. Any other files will be skipped by the
+test file scanner.</p>
+</section>
+<section id="import-mock-wx">
+<h2><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">mock_wx</span></code><a class="headerlink" href="#import-mock-wx" title="Link to this heading"></a></h2>
+<p>Each of your test files <em>must</em> <code class="docutils literal notranslate"><span class="pre">import</span></code> from mock_wx, even if they’re not using it. This is important because the
+mock_wx module patches the import paths to replace wx with its own mocked-up version. If anything from the actual wx
+library gets imported before mock_wx does, then all the mock_wx tests will fail.</p>
+</section>
+<section id="wxtestcase">
+<h2><code class="docutils literal notranslate"><span class="pre">wxTestCase</span></code><a class="headerlink" href="#wxtestcase" title="Link to this heading"></a></h2>
+<p>Inside your test files, create a test suite for each class in the source file that you wish to test. If you’re writing
+tests for <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">Widget:</span></code>, then create a <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">TestWidget(wxTestCase):</span></code> in your test file. The class name <em>must</em> start
+with <code class="docutils literal notranslate"><span class="pre">Test</span></code>, and it <em>must</em> subclass <code class="docutils literal notranslate"><span class="pre">wxTestCase</span></code>.</p>
+</section>
+<section id="def-setup-self">
+<h2><code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">setUp(self):</span></code><a class="headerlink" href="#def-setup-self" title="Link to this heading"></a></h2>
+<p>Typically, each test suite will include a <code class="docutils literal notranslate"><span class="pre">setUp()</span></code> function that instantiates a device under test or “DUT”. If the
+function exists, then the test runner will execute <code class="docutils literal notranslate"><span class="pre">setUp()</span></code> before each test in the suite is run, so each test starts
+with a clean, freshly instantiated DUT. This function <em>must</em> be named <code class="docutils literal notranslate"><span class="pre">setUp()</span></code>—with the capital “U”.</p>
+</section>
+<section id="self-dut">
+<h2><code class="docutils literal notranslate"><span class="pre">self.dut</span></code><a class="headerlink" href="#self-dut" title="Link to this heading"></a></h2>
+<p>Every test operates on a DUT saved in <code class="docutils literal notranslate"><span class="pre">self.dut</span></code>. If you want different tests to instantiate the DUT with different
+parameters, you should either:</p>
+<ul class="simple">
+<li><p>Instantiate <code class="docutils literal notranslate"><span class="pre">self.dut</span></code> in the tests themselves instead of in <code class="docutils literal notranslate"><span class="pre">setUp()</span></code></p></li>
+<li><p>Use multiple test suites, each with their own <code class="docutils literal notranslate"><span class="pre">setUp()</span></code> that instantiates the DUT how you prefer</p></li>
+</ul>
+<p>Either way, you’ll still need to save the DUT in <code class="docutils literal notranslate"><span class="pre">self.dut</span></code>.</p>
+</section>
+<section id="self-app">
+<h2><code class="docutils literal notranslate"><span class="pre">self.app</span></code><a class="headerlink" href="#self-app" title="Link to this heading"></a></h2>
+<p>Every wxPython application has an application object, and in a mock_wx test, that object is saved as <code class="docutils literal notranslate"><span class="pre">self.app</span></code>. This
+object is instantiated for you.</p>
+<p>If your test suite is testing the application object itself, both <code class="docutils literal notranslate"><span class="pre">self.dut</span></code> and <code class="docutils literal notranslate"><span class="pre">self.app</span></code> will point to the same
+objects. This is discussed later in its own section.</p>
+</section>
+<section id="self-ecl">
+<h2><code class="docutils literal notranslate"><span class="pre">self.ecl</span></code><a class="headerlink" href="#self-ecl" title="Link to this heading"></a></h2>
+<p>Instantiating the DUT generally adds a few calls into the ledger. I like to store those ECL entries in <code class="docutils literal notranslate"><span class="pre">self.ecl</span></code> so
+it’s available for use in each test.</p>
+</section>
+<section id="with-self-create-dut">
+<h2><code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">self.create_dut():</span></code><a class="headerlink" href="#with-self-create-dut" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">self.create_dut():</span></code> context is where you should create the DUT. This handles resetting the ledger and any
+necessary patching required.</p>
+</section>
+<section id="def-test-construct-self">
+<h2><code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">test_construct(self):</span></code><a class="headerlink" href="#def-test-construct-self" title="Link to this heading"></a></h2>
+<p>If your <code class="docutils literal notranslate"><span class="pre">setUp()</span></code> function put any call instructions in <code class="docutils literal notranslate"><span class="pre">self.ecl</span></code>, then you’ll want to create a <code class="docutils literal notranslate"><span class="pre">test_construct()</span></code>
+boilerplate function to test it.</p>
+</section>
+<section id="note-func">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;note_func(...)</span></code><a class="headerlink" href="#note-func" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">note_func()</span></code> is a decorator that tells mock_wx to “take note” of calls to one of your functions—i.e. save a copy of the
+call in the ledger.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There’s no need to call <code class="docutils literal notranslate"><span class="pre">note_func()</span></code> on any of the wx functions. Calls to the wx functions will always
+be kept in the ledger. This is just for your own functions. Typically, you will use this decorator once on each test
+function, but you may also “note” any other functions that will be called—directly or indirectly—in the test. Contrast
+this with <code class="docutils literal notranslate"><span class="pre">&#64;patch()</span></code>, described below.</p>
+</div>
+</section>
+<section id="expect-self-ecl">
+<h2><code class="docutils literal notranslate"><span class="pre">expect</span> <span class="pre">=</span> <span class="pre">self.ecl</span></code><a class="headerlink" href="#expect-self-ecl" title="Link to this heading"></a></h2>
+<p>Each test starts by initializing the ECL. This should get a copy of all the calls made when the DUT was constructed.</p>
+</section>
+<section id="ecl">
+<h2><code class="docutils literal notranslate"><span class="pre">ecl</span> <span class="pre">+=</span> <span class="pre">[...]</span></code><a class="headerlink" href="#ecl" title="Link to this heading"></a></h2>
+<p>After each call that adds more entries to the ledger, update your ECL by adding to it with the <code class="docutils literal notranslate"><span class="pre">+=</span></code> operator. It’s
+important that you don’t use <code class="docutils literal notranslate"><span class="pre">.append()</span></code> as we want to create a copy of <code class="docutils literal notranslate"><span class="pre">self.ecl</span></code>. We don’t want any of the unit tests
+to modify the <code class="docutils literal notranslate"><span class="pre">self.ecl</span></code> calls in-place.</p>
+</section>
+<section id="self-mock">
+<h2><code class="docutils literal notranslate"><span class="pre">self.mock</span></code><a class="headerlink" href="#self-mock" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">self.mock</span></code> is where mock_wx stores the ledger. You will also access <code class="docutils literal notranslate"><span class="pre">self.mock</span></code> to configure <code class="docutils literal notranslate"><span class="pre">return_value</span></code> and
+<code class="docutils literal notranslate"><span class="pre">side_effect</span></code> values.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful to reset all <code class="docutils literal notranslate"><span class="pre">side_effect</span></code> values to <code class="docutils literal notranslate"><span class="pre">None</span></code> after you’re done. These will persist past
+the end of a unit test, and it’s important that one test cannot change any other test’s behavior. See the section on
+<code class="docutils literal notranslate"><span class="pre">side_effect</span></code> for details.</p>
+</div>
+<p>TODO</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When specifying <code class="docutils literal notranslate"><span class="pre">return_value</span></code> and <code class="docutils literal notranslate"><span class="pre">side_effect</span></code> values in <code class="docutils literal notranslate"><span class="pre">self.mock</span></code>, always write <code class="docutils literal notranslate"><span class="pre">.return_value</span></code>
+instead of <code class="docutils literal notranslate"><span class="pre">()</span></code>. Although you could write:</p>
+<p><code class="docutils literal notranslate"><span class="pre">self.mock.MessageDialog().ShowModal.return_value</span> <span class="pre">=</span> <span class="pre">wx.ID_YES</span></code></p>
+<p>instead of:</p>
+<p><code class="docutils literal notranslate"><span class="pre">self.mock.MessageDialog.return_value.ShowModal.return_value</span> <span class="pre">=</span> <span class="pre">wx.ID_YES</span></code></p>
+<p>There is an important difference between the two. The prior example will create an unintentional entry in the ledger
+while the latter will not!</p>
+</div>
+</section>
+<section id="self-check-ecl">
+<h2><code class="docutils literal notranslate"><span class="pre">self.check(ecl)</span></code><a class="headerlink" href="#self-check-ecl" title="Link to this heading"></a></h2>
+<p>Each test should end with a call to <code class="docutils literal notranslate"><span class="pre">self.check(ecl)</span></code>. This will compare your ECL against the ledger. Do not forget this
+step! Your test is worthless if it doesn’t actually verify the ledger.</p>
+</section>
+<section id="patch">
+<h2><code class="docutils literal notranslate"><span class="pre">&#64;patch()</span></code><a class="headerlink" href="#patch" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">patch()</span></code> decorator is very similar to the version in <code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code> but retooled for use with mock_wx.</p>
+</section>
+<section id="template-txt">
+<h2><code class="docutils literal notranslate"><span class="pre">template.txt</span></code><a class="headerlink" href="#template-txt" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">template.txt</span></code> is a template you can copy whenever you create a new test. It gives you a good starting place and
+includes all these fiddly bits you won’t want to forget.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installing.html" class="btn btn-neutral float-left" title="Installing mock_wx and CallDiff" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building-ECLs.html" class="btn btn-neutral float-right" title="Building call Lists" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jim King.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example Test: &mdash; mock_wx  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FAQ (Frequently Asked Questions)" href="faq.html" />
+    <link rel="prev" title="Introduction" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mock_wx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example Test:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ (Frequently Asked Questions)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing mock_wx and CallDiff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="major-players.html">The Major Players</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building-ECLs.html">Building <cite>call</cite> Lists</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mock_wx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example Test:</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/basic-example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-test">
+<h1>Example Test:<a class="headerlink" href="#example-test" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you may have guessed from the name, mock_wx leverages <code class="docutils literal notranslate"><span class="pre">Mock</span></code> objects from <code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code>. The
+following example—and indeed all of this documentation—presumes you are fluent in their use. If not, this would be an
+excellent time for a refresher! <a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html">https://docs.python.org/3/library/unittest.mock.html</a></p>
+</div>
+<p>Suppose you’ve bound a <code class="docutils literal notranslate"><span class="pre">wx.EVT_CLOSE</span></code> handler to your main frame that checks for any unsaved data before quitting. The
+pertinent bits of code might look a bit like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">wx</span>
+
+<span class="c1"># Constants:</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetTranslation</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handler for close events&quot;&quot;&quot;</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">()</span> <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">():</span>
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;You&#39;ll lose your unsaved changes if you quit now. Quit anyway?&quot;</span><span class="p">),</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Unsaved Changes&quot;</span><span class="p">),</span>
+                <span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_NO</span><span class="p">:</span>
+                    <span class="n">event</span><span class="o">.</span><span class="n">Veto</span><span class="p">()</span>
+                    <span class="k">return</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">dialog</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>I like to start writing my tests with a comment or log message for each execution path I see through the function. To
+test the <code class="docutils literal notranslate"><span class="pre">on_close()</span></code> function, I would write something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@note_func</span><span class="p">(</span><span class="s2">&quot;on_close&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Should display a confirmation dialog before losing any unsaved changes&quot;&quot;&quot;</span>
+    <span class="n">ecl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecl</span>
+
+    <span class="c1"># No unsaved changes</span>
+    <span class="c1"># Unsaved changes, the user clicks &quot;No&quot; on the dialog</span>
+    <span class="c1"># Same but the user clicks &quot;Yes&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">ecl</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Yes, there’s a little boilerplate code above and below the comments, but for the moment, let’s ignore that and focus
+only on the test.</p>
+<p>To test how the function behaves, we will first need an event to pass into it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># No unsaved changes</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Events don’t accept <code class="docutils literal notranslate"><span class="pre">name</span></code> parameters, right? Well, the events we create here—all wx objects technically—are more
+mock objects than ordinary wx objects. Without complaint, these objects will accept any parameters or members we
+specify.</p>
+</div>
+<p>Next, we want this mock object to return <code class="docutils literal notranslate"><span class="pre">True</span></code> if anyone calls its <code class="docutils literal notranslate"><span class="pre">CanVeto()</span></code> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Additionally, we want the application’s command processor to return <code class="docutils literal notranslate"><span class="pre">False</span></code> when someone calls its <code class="docutils literal notranslate"><span class="pre">IsDirty()</span></code>
+method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">on_close()</span></code> method has no return value, so we can just call it directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At this point, you might be thinking, “You’re skipping too many steps! What does that ‘/event’ name mean? What’s that
+<code class="docutils literal notranslate"><span class="pre">self.dut</span></code> refer to?” And yes, yes, I realize you don’t have all the information just yet. I want to show you the
+shape of an example first. The specifics will be explained later on.</p>
+<p>Finally, this portion of the test will need to add to the ECL. Note that creating the <code class="docutils literal notranslate"><span class="pre">wx.CloseEvent</span></code> will get
+journaled just like everything else wx-related, so it sets some expectations too:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># No unsaved changes</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)</span>
+<span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span><span class="n">call</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;/event&quot;</span><span class="p">)]</span>
+<span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">GetApp</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">(),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Note how each entry added to the expectations follows what we expect the code to do. We call the <code class="docutils literal notranslate"><span class="pre">on_close()</span></code>
+function, we check <code class="docutils literal notranslate"><span class="pre">CanVeto()</span></code>, we call <code class="docutils literal notranslate"><span class="pre">wx.GetApp()</span></code>, we check <code class="docutils literal notranslate"><span class="pre">IsDirty()</span></code>, and then we fall through with an
+<code class="docutils literal notranslate"><span class="pre">event.skip()</span></code>.</p>
+<p>If you’re getting nervous about how you’ll have to write ECL entries, then take a deep breath and relax. You won’t have
+to. This call list will actually be computer-generated. You’ll only have to copy them, read them over and verify that
+they’re what you’d expect, and to do a little tweaking when they’re imperfect. I promise!</p>
+<p>The other two parts of this test are similar except that we also have to specify what <code class="docutils literal notranslate"><span class="pre">ShowModal()</span></code> will return:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unsaved changes, the user clicks &quot;No&quot; on the dialog</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="o">.</span><span class="n">MessageDialog</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">ShowModal</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_NO</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">GetApp</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="p">,</span>
+        <span class="s2">&quot;You&#39;ll lose your unsaved changes if you quit now. Quit anyway?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unsaved Changes&quot;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;ICON_WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;YES_NO&quot;</span><span class="p">,</span> <span class="s2">&quot;NO_DEFAULT&quot;</span><span class="p">},</span>
+    <span class="p">),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">()</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Veto</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">()</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(),</span>
+<span class="p">]</span>
+
+<span class="c1"># Same but the user clicks &quot;Yes&quot;</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">mock</span><span class="o">.</span><span class="n">MessageDialog</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">ShowModal</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_YES</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="n">ecl</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="n">event</span><span class="p">),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">CanVeto</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">GetApp</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">cmd_processor</span><span class="o">.</span><span class="n">IsDirty</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dut</span><span class="p">,</span>
+        <span class="s2">&quot;You&#39;ll lose your unsaved changes if you quit now. Quit anyway?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unsaved Changes&quot;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s2">&quot;ICON_WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;YES_NO&quot;</span><span class="p">,</span> <span class="s2">&quot;NO_DEFAULT&quot;</span><span class="p">},</span>
+    <span class="p">),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">()</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">()</span><span class="o">.</span><span class="n">Destroy</span><span class="p">(),</span>
+    <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">(),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>And that’s what ledger testing looks like. You create one test file to test each file of source code. In them, you
+create one test suite to test each class defined in your source code. And then you create one or more test functions to
+test each method in your classes. The tests work through each of the execution paths in the code and keep a ledger of
+what calls they will make.</p>
+<p>Sound intriguing? Read on, and we’ll discuss all the bits in detail.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ (Frequently Asked Questions)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jim King.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
