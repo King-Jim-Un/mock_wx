@@ -1,7 +1,7 @@
 from wx import TextAttr, Object, NotifyEvent, Dialog, Printout, Control, ComboCtrl, Command, DataObjectSimple
 from wx.html import HtmlListBox
 from wx.adv import PropertySheetDialog
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 EVT_RICHTEXT_BUFFER_RESET = {"EVT_RICHTEXT_BUFFER_RESET"}
 EVT_RICHTEXT_CHARACTER = {"EVT_RICHTEXT_CHARACTER"}
 EVT_RICHTEXT_CONSUMING_CHARACTER = {"EVT_RICHTEXT_CONSUMING_CHARACTER"}

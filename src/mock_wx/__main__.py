@@ -22,5 +22,4 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--log-level", help="Set the logging level", default="WARNING")
     parser.add_argument("-s", "--start-at", help="Start running all tests starting with this one", action="store_true")
     args = parser.parse_args()
-    # args = Namespace(base_dir=Path(r"C:\git\CallDiff\scratch"), log_level="DEBUG")
     sys.exit(main(args))

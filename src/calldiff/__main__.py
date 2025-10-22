@@ -1,9 +1,12 @@
 """Main entrypoint"""
 
+# Ensure we import wx before mock_wx to foil mock_wx's path tweaks
+import wx
+import mock_wx
+
 from argparse import ArgumentParser
 from pathlib import Path
 import logging
-import wx
 
 from calldiff.constants import CONSTANTS
 from calldiff.application import CallDiffApp

@@ -1,7 +1,6 @@
-from mock_wx import wxTestCase, note_func, patch
+from mock_wx import wxTestCase, note_func, patch, call
 
 import logging
-from unittest.mock import call
 import wx
 
 from sample2 import MainFrame

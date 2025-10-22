@@ -22,6 +22,7 @@ class StatusFlags(Enum):
     DISPLAY_DIFF = auto()
     DISPLAY_EXCEPTION = auto()
     DISPLAY_SUCCESS = auto()
+    DISPLAY_FILE_SUMMARY = auto()
 
 
 class LineType(Enum):

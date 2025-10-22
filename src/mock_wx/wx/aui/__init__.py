@@ -1,5 +1,5 @@
 from wx import Frame, BookCtrlEvent, EvtHandler, Event, NotifyEvent, Control, Panel, BookCtrlBase
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 AUI_MGR_ALLOW_ACTIVE_PANE = {"AUI_MGR_ALLOW_ACTIVE_PANE"}
 AUI_MGR_ALLOW_FLOATING = {"AUI_MGR_ALLOW_FLOATING"}
 AUI_MGR_DEFAULT = {"AUI_MGR_DEFAULT"}

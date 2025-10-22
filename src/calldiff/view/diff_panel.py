@@ -9,7 +9,7 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
-from mock_wx._test_case import CallDifference
+from mock_wx.test_case import CallDifference
 
 from calldiff import application
 from calldiff.constants import CONSTANTS, LineType, VisualState

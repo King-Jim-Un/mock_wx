@@ -1,5 +1,5 @@
 from wx import Control, NotifyEvent, Object
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 EVT_WEBVIEW_ERROR = {"EVT_WEBVIEW_ERROR"}
 EVT_WEBVIEW_FULLSCREEN_CHANGED = {"EVT_WEBVIEW_FULLSCREEN_CHANGED"}
 EVT_WEBVIEW_LOADED = {"EVT_WEBVIEW_LOADED"}

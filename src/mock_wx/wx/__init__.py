@@ -1,4 +1,4 @@
-from mock_wx._test_case import G_MOCK, BaseClass
+from mock_wx.test_case import G_MOCK, BaseClass
 from typing import ContextManager
 from enum import Enum, Flag
 ACCEL_ALT = {"ACCEL_ALT"}

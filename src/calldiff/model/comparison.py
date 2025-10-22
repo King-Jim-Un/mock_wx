@@ -6,7 +6,7 @@ import logging
 from typing import Any, List, Optional, NewType, Tuple
 import wx
 
-from mock_wx._test_case import CallDifference
+from mock_wx.test_case import CallDifference
 
 from calldiff.constants import LineType
 

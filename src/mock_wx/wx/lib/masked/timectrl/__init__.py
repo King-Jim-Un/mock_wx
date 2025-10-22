@@ -1,5 +1,5 @@
 from wx.lib.masked.textctrl import BaseMaskedTextCtrl
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 from wx import PyCommandEvent
 class TimeCtrl(BaseMaskedTextCtrl): ...
 class TimeCtrlAccessorsMixin(BaseClass): ...

@@ -9,7 +9,7 @@ import pickle
 import sys
 from typing import Tuple, Any, NewType, List, Optional, TextIO, Callable, Dict
 
-from mock_wx._test_case import wxTestCase
+from mock_wx.test_case import wxTestCase
 
 
 class Actions(Enum):
@@ -65,6 +65,8 @@ class TestCaseDetails:
 @dataclass
 class FileDetails:
     path_id: IdNum
+    launch_time: datetime = field(default_factory=lambda: datetime.now())
+    done_time: Optional[datetime] = None
     import_failure: Optional[Exception] = None
     doc_string: Optional[str] = None
 
@@ -163,7 +165,10 @@ class Tester:
             file_details.doc_string = module.__doc__
             self.assign_id(file_details)
             self.load_test_cases(module, path_id)
+            file_details.done_time = datetime.now()
+            self.assign_id(file_details)
         except Exception as error:
+            file_details.done_time = datetime.now()
             file_details.import_failure = error
             self.assign_id(file_details)
 

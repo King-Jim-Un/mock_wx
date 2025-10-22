@@ -61,6 +61,7 @@ class TestClass:
 class TestFile:
     """A test file"""
     path: Path
+    run_time: timedelta = None
     import_failure: Optional[Exception] = None
     doc_string: Optional[str] = None
     test_classes: List[TestClass] = field(default_factory=list)
@@ -111,6 +112,8 @@ class RunTestsThread(Thread):
         elif isinstance(obj, FileDetails):
             # The details on a file
             test_file = self.objects_by_id[obj.path_id]  # type: ignore
+            if obj.done_time:
+                test_file.run_time = obj.done_time - obj.launch_time
             test_file.import_failure = obj.import_failure
             test_file.doc_string = obj.doc_string
             if obj.import_failure is not None:
@@ -204,3 +207,4 @@ class RunTestsThread(Thread):
 
         live_data.status.discard(StatusFlags.RUNNING)
         safe_publish(CONSTANTS.PUBSUB.TEST_COMPLETE)
+# TODO: why is test_case appearing in test_sample2.py when we run the app?

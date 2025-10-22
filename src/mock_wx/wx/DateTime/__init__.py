@@ -1,4 +1,4 @@
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 Country = {"Country"}
 Month = {"Month"}
 TZ = {"TZ"}

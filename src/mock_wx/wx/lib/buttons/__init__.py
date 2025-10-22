@@ -1,5 +1,5 @@
 from wx import Control, CommandEvent
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 DefaultSize = {"DefaultSize"}
 EVT_BUTTON = {"EVT_BUTTON"}
 EVT_ENTER_WINDOW = {"EVT_ENTER_WINDOW"}

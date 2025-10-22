@@ -9,8 +9,6 @@ import wx
 LOG = logging.getLogger(__name__)
 _ = wx.GetTranslation
 
-from mock_wx._test_case import CallDifference
-
 from calldiff import application
 from calldiff.constants import CONSTANTS
 from calldiff.control.run_tests import TestFunction
@@ -134,26 +132,8 @@ class MainFrame(wx.Frame):
         item_id = self.tree.GetSelection()
         if item_id.IsOk():
             if self.tree.GetItemData(item_id) == obj:
-                self.on_select(obj)
+                application.get_app().events.on_select(obj)
 
     def on_tree(self, event: wx.TreeEvent) -> None:
         """Handle a node selection event"""
-        self.on_select(self.tree.GetItemData(event.GetItem()))
-
-    def on_select(self, data):
-        """Handle a tree node selection event"""
-        events = application.get_app().events
-        if isinstance(data, TestFunction):
-            if data.completed:
-                if data.run_failure is None:
-                    events.display_success(data)
-                elif isinstance(data.run_failure, SkipTest):
-                    events.display_skip(data)
-                elif isinstance(data.run_failure, CallDifference):
-                    events.display_call_diff(data)
-                else:
-                    events.display_other_error(data)
-            else:
-                events.display_none(data)
-        else:
-            events.display_none(data)
+        application.get_app().events.on_select(self.tree.GetItemData(event.GetItem()))

@@ -1,4 +1,4 @@
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 from wx import Object
 Animation = {"Animation"}
 XML_ENTITY_NODE = {"XML_ENTITY_NODE"}

@@ -1,4 +1,4 @@
-from mock_wx._test_case import BaseClass
+from mock_wx.test_case import BaseClass
 from wx import Object
 XMLDOC_KEEP_WHITESPACE_NODES = {"XMLDOC_KEEP_WHITESPACE_NODES"}
 XML_ATTRIBUTE_NODE = {"XML_ATTRIBUTE_NODE"}
